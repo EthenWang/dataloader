@@ -17,6 +17,8 @@
     "no-consecutive-blank-lines": false,
     "semicolon": [false, "never"],
     "trailing-comma": false,
-    "member-access": false
+    "member-access": false,
+    "arrow-parens": false,
+    "no-trailing-whitespace": false
   }
 }

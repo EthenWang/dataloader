@@ -301,18 +301,24 @@ export default [
     label: 'Grid Attributes',
     children: [
       {
-        fieldName: 'objwidth',
-        type: 'textfield',
-        label: 'Width',
-        model: 'objwidth',
-        format: 'number'
-      },
-      {
-        fieldName: 'objheigth',
-        type: 'textfield',
-        label: 'Heigth',
-        model: 'objheight',
-        format: 'number'
+        fieldName: 'gridattrpanel',
+        type: 'group',
+        children: [
+          {
+            fieldName: 'objwidth',
+            type: 'textfield',
+            label: 'Width',
+            model: 'objwidth',
+            format: 'number'
+          },
+          {
+            fieldName: 'objheigth',
+            type: 'textfield',
+            label: 'Heigth',
+            model: 'objheight',
+            format: 'number'
+          },
+        ]
       },
       {
         fieldName: 'multrowselect',

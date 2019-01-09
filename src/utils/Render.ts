@@ -2,7 +2,7 @@ import { CreateElement, VNode } from 'vue';
 
 export interface ObjectDefinition {
   fieldName: string;
-  type: 'panel' | 'textfield' | 'checkbox' | 'combobox' | 'grid' | 'text';
+  type: 'panel' | 'group' | 'textfield' | 'checkbox' | 'combobox' | 'grid' | 'text';
   label?: string;
   model?: string;
   format?: string;
@@ -11,11 +11,12 @@ export interface ObjectDefinition {
 }
 
 const ComponentMap = {
-  panel: 'v-card',
-  textfield: 'v-text-field',
-  combobox: 'v-combobox',
-  checkbox: 'v-checkbox',
-  grid: 'v-data-table',
+  panel: 'div',
+  group: 'div',
+  textfield: 'a-input',
+  combobox: 'a-select',
+  checkbox: 'a-checkbox',
+  grid: 'a-table',
   text: 'h2'
 }
 
@@ -39,90 +40,71 @@ export class Render {
 
   private createNode(data: ObjectDefinition) {
     const children = this.processData(data.children);
-    const containerAttrs: NodeData = {};
-    const colspan = data.colspan || (data.type === 'panel' ? 12 : 3);
-    containerAttrs[`md${colspan}`] = true;
-
-    const componentAttrs: NodeData = {};
-    if (data.model) {
-      componentAttrs['v-model'] = data.model;
-    }
-
-    const componentProps: NodeData = {};
-    if (data.label && data.type !== 'panel') {
-      componentProps.label = data.label;
-    }
 
     if (data.type === 'grid') {
-      componentProps.rowsPerPage = 10;
-      componentProps.items = [];
     }
 
     switch (data.type) {
       case 'panel':
         return this.createElement(
           ComponentMap[data.type],
-          { attrs: containerAttrs },
           [
+            this.createElement('h3', [ data.label || '' ]),
             this.createElement(
-              'v-card-title',
-              { attrs: { 'primary-title': true } },
-              [
-                this.createElement('h3', [ data.label || '' ]),
-              ]
+              'a-row',
+              { 
+                attrs: {
+                  gutter: 16
+                } 
+              }, 
+              [ children ]
             ),
+            this.createElement('a-divider')
+          ]
+        );
+      case 'group':
+        return this.createElement(
+          ComponentMap[data.type],
+          { style: { 'padding-left': '8px' } },
+          [ 
             this.createElement(
-              'v-container',
-              { attrs: { 'grid-list-md': true, 'fluid': true } },
-              [
-                this.createElement(
-                  'v-layout',
-                  { attrs: { row: true, wrap: true } },
-                  children
-                )
-              ]
-            ),
-            this.createElement('v-divider')
+              'a-row', 
+              { 
+                attrs: {
+                  span: 24,
+                  gutter: 16
+                } 
+              },
+              [ children ]
+            ) 
           ]
         );
       case 'grid':
-        return this.createElement(
-          'div',
-          [
-            this.createElement(
-              ComponentMap[data.type],
-              { props: componentProps }
-            ),
-            this.createElement('v-divider')
-          ]
-        );
+        return this.createElement('div', [ this.createElement(ComponentMap[data.type]) ]);
       case 'text':
         return this.createElement(ComponentMap[data.type], [ data.label || '' ]);
-          /*return this.createElement(
-            ComponentMap[data.type],
-            [
-              this.createElement('h2', [ data.label || '' ]),
-            ]
-          );*/
       default:
         return this.createElement(
-          'v-flex',
-          {
-            attrs: {
-              ...containerAttrs,
-              lg2: true,
-              sm6: true,
-              xs12: true
-            }
-          },
+          'a-col',
+          { attrs: { span: 4 } },
           [
             this.createElement(
-              ComponentMap[data.type],
+              'a-form-item',
               {
-                attrs: { ...componentAttrs },
-                props: { ...componentProps }
+                attrs: { label: data.type === 'checkbox' ? '' : data.label || '' },
+                props: { span: 5, colon: false },
               },
-              children
+              [
+                this.createElement(
+                  ComponentMap[data.type],
+                  {
+                    attrs: { 'v-model': data.model },
+                    class: { 'gutter-row': true },
+                    style: { width: '100%' }
+                  },
+                  data.type === 'checkbox' ? data.label || '' : children
+                )
+              ]
             )
           ]
         );
