@@ -1,4 +1,4 @@
-export interface ScreenInfo {
+export interface ScreenModel {
     systemid: string;
     screenname: string;
     screenprogram: string;
@@ -32,7 +32,7 @@ export interface ScreenInfo {
     autoscrsync: boolean;
 }
 
-export interface ScreenObject {
+export interface ScreenObjectModel {
     systemid: string;
     screenname: string;
     objactive: boolean;
@@ -108,7 +108,7 @@ export interface ScreenObject {
     objcreatedbyscreendesigner: boolean;
 }
 
-export interface ScreenChildObject {
+export interface ScreenChildObjectModel {
     systemid: string;
     layercode: string;
     layertype: string;

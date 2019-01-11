@@ -20,10 +20,6 @@ const ComponentMap = {
   text: 'h2'
 }
 
-interface NodeData {
-  [k: string]: any;
-}
-
 export class Render {
   constructor(protected createElement: CreateElement) {}
 
@@ -32,9 +28,7 @@ export class Render {
   }
 
   private processData(data: ObjectDefinition[] | undefined): VNode[] {
-    if (!data) {
-      return [];
-    }
+    if (!data) return [];
     return data.map((item) => this.createNode(item));
   }
 
@@ -88,7 +82,7 @@ export class Render {
           'a-col',
           { attrs: { span: 4 } },
           [
-            this.createElement(
+            /*this.createElement(
               'a-form-item',
               {
                 attrs: { label: data.type === 'checkbox' ? '' : data.label || '' },
@@ -98,13 +92,16 @@ export class Render {
                 this.createElement(
                   ComponentMap[data.type],
                   {
-                    attrs: { 'v-model': data.model },
-                    class: { 'gutter-row': true },
+                    props: { value: data.model },
                     style: { width: '100%' }
                   },
                   data.type === 'checkbox' ? data.label || '' : children
                 )
               ]
+            )*/
+            this.createElement(
+              'ScreenObject',
+              { props: { props: data } }
             )
           ]
         );

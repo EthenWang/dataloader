@@ -19,6 +19,7 @@
     "trailing-comma": false,
     "member-access": false,
     "arrow-parens": false,
-    "no-trailing-whitespace": false
+    "no-trailing-whitespace": false,
+    "curly": false
   }
 }
