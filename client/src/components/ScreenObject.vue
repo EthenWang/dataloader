@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import Vue, { CreateElement } from 'vue';
+import Vue from 'vue';
 import { Component, Prop, Model } from 'vue-property-decorator';
 
 @Component
@@ -26,9 +26,9 @@ export default class ScreenObject extends Vue {
     type: string,
   };
 
-  data() {
-    return {
-      model: 888
+  get model() {
+    if (this.props.model) {
+      return this.$_.get(this.$store.state.screen, this.props.model);
     }
   }
 }

@@ -4,8 +4,8 @@ import { Message } from './message';
 
 interface Screen {
     screenInfo: ScreenModel;
-    screenObjects?: ScreenObjectModel[];
-    screenChildObjects?: ScreenChildObjectModel[];
+    screenobject?: ScreenObjectModel[];
+    screenchildobject?: ScreenChildObjectModel[];
 }
 
 export { Screen, ScreenModel, ScreenObjectModel, ScreenChildObjectModel, Translation, Message }

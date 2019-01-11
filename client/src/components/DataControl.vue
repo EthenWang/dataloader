@@ -12,14 +12,6 @@ import ScreenObject from './ScreenObject.vue';
 export default class DataControl extends Vue {
   @Prop(String) type!: string;
 
-  data() {
-    let screenobj = {} as ScreenObjectModel;
-    screenobj.screenobjname = 'test';
-    return {
-      screenobj
-    }
-  }
-
   render(h: CreateElement) {
     const engine = new Render(h);
     switch (this.type) {

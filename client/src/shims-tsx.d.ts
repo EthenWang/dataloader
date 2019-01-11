@@ -1,4 +1,5 @@
 import Vue, { VNode } from 'vue';
+import _ from 'lodash';
 
 declare global {
   namespace JSX {
@@ -9,5 +10,12 @@ declare global {
     interface IntrinsicElements {
       [elem: string]: any;
     }
+  }
+}
+
+declare module 'vue/types/vue' {
+// 3. 声明为 Vue 补充的东西
+  interface Vue {
+    $_: _.LoDashStatic
   }
 }
