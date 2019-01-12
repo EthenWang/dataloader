@@ -46,7 +46,7 @@
           </a-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-          <DataControl type="screen" />
+          <screen-control/>
         </a-layout-content>
       </a-layout>
     </a-layout-content>
@@ -54,12 +54,12 @@
 </template>
 
 <script>
-import DataControl from './components/DataControl';
+import ScreenControl from './components/ScreenControl';
 
 export default {
   name: 'App',
   components: {
-    DataControl
+    ScreenControl
   },
   data () {
     return {
