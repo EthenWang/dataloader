@@ -3,7 +3,7 @@ import { Translation } from './translation';
 import { Message } from './message';
 
 interface Screen {
-    screenInfo: ScreenModel;
+    screeninfo: ScreenModel;
     screenobject?: ScreenObjectModel[];
     screenchildobject?: ScreenChildObjectModel[];
 }

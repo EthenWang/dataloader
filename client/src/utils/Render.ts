@@ -2,7 +2,7 @@ import { CreateElement, VNode } from 'vue';
 
 export interface ObjectDefinition {
   fieldName: string;
-  type: 'panel' | 'group' | 'textfield' | 'checkbox' | 'combobox' | 'grid' | 'text';
+  type: 'panel' | 'group' | 'textfield' | 'search' | 'checkbox' | 'combobox' | 'grid' | 'text';
   label?: string;
   model?: string;
   format?: string;
@@ -13,9 +13,6 @@ export interface ObjectDefinition {
 const ComponentMap = {
   panel: 'div',
   group: 'div',
-  textfield: 'a-input',
-  combobox: 'a-select',
-  checkbox: 'a-checkbox',
   grid: 'a-table',
   text: 'h2'
 }
@@ -34,9 +31,6 @@ export class Render {
 
   private createNode(data: ObjectDefinition) {
     const children = this.processData(data.children);
-
-    if (data.type === 'grid') {
-    }
 
     switch (data.type) {
       case 'panel':

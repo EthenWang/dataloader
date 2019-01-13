@@ -1,5 +1,17 @@
 export default [
   {
+    field: 'screeninfosection',
+    type: 'panel',
+    children: [
+      {
+        fieldName: 'screenname',
+        type: 'search',
+        label: 'Screen Name',
+        model: 'screeninfo.screenname'
+      }
+    ]
+  },
+  {
     fieldName: 'screenobjpanel',
     type: 'text',
     label: 'Screen Object Information'

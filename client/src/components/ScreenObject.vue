@@ -1,30 +1,48 @@
 <template>
   <a-form-item v-if="props.type === 'checkbox'">
-    <a-checkbox :checked="model" @change="onInputChange">
+    <a-checkbox 
+      :checked="model" 
+      @change="onInputChange"
+    >
       {{ props.label }}
     </a-checkbox>
   </a-form-item>
   <a-form-item v-else :label="props.label" :colon="false">
-    <template v-if="props.type === 'combobox'">
-      <a-select :value="model" style="width: 100%" @change="onSelectChange"/>
-    </template>
-    <template v-else>
-      <a-input :value="model" style="width: 100%" @change="onInputChange"/>
-    </template>
+    <a-auto-complete
+      v-if="props.type === 'search'"
+      style="width: 100%"
+      @search="onSearch"
+      @change="onSelectChange"
+    >
+      <a-input>
+        <a-icon slot="suffix" type="search" />
+      </a-input>
+    </a-auto-complete>
+    <a-select 
+      v-else-if="props.type === 'combobox'" 
+      :value="model" 
+      style="width: 100%" 
+      @change="onSelectChange"
+    />
+    <a-input 
+      v-else 
+      :value="model" 
+      style="width: 100%" 
+      @change="onInputChange"
+    />
   </a-form-item>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop, Model } from 'vue-property-decorator';
-import { __values } from 'tslib';
 
 @Component
 export default class ScreenObject extends Vue {
   @Prop(Object) props!: {
     label: string,
     model: string,
-    type: 'textfield' | 'checkbox' | 'combobox',
+    type: 'textfield' | 'search' | 'checkbox' | 'combobox',
   };
 
   get model() {
@@ -53,6 +71,10 @@ export default class ScreenObject extends Vue {
       type: this.props.type,
       value
     });
+  }
+
+  onSearch(value: string) {
+
   }
 }
 </script>
