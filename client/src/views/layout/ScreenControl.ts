@@ -1,18 +1,53 @@
 export default [
   {
-    field: 'screeninfosection',
+    fieldName: 'screeninfosection',
     type: 'panel',
     children: [
       {
-        fieldName: 'screenname',
-        type: 'search',
-        label: 'Screen Name',
-        model: 'screeninfo.screenname'
+        fieldName: 'screeninfosection1',
+        type: 'group',
+        children: [
+          {
+            fieldName: 'screenname',
+            type: 'search',
+            label: 'Screen Name',
+            model: 'screeninfo.screenname'
+          },
+          {
+            fieldName: 'screenprogram',
+            type: 'textfield',
+            label: 'Program Name',
+            model: 'screeninfo.screenprogram'
+          },
+          {
+            fieldName: 'screentype',
+            type: 'textfield',
+            label: 'Screen Type',
+            model: 'screeninfo.screentype'
+          },
+          {
+            fieldName: 'screentitle',
+            type: 'label',
+            label: 'Screen Title',
+            model: 'screeninfo.screentitle'
+          },
+          {
+            fieldName: 'helpkey',
+            type: 'textfield',
+            label: 'Help Text',
+            model: 'screeninfo.helpkey'
+          }
+        ]
+      },
+      {
+        fieldName: 'virtualdates',
+        type: 'checkbox',
+        label: 'Virtual Dates',
+        model: 'screeninfo.virtualdates'
       }
     ]
   },
   {
-    fieldName: 'screenobjpanel',
     type: 'text',
     label: 'Screen Object Information'
   },
@@ -34,10 +69,11 @@ export default [
       },
       {
         fieldName: 'objtype',
-        type: 'textfield',
+        type: 'combobox',
         label: 'Object Type',
         model: 'screenobject.objtype',
-        format: 'string'
+        format: 'string',
+        cls: 'objtype'
       },
       {
         fieldName: 'objparent',
@@ -62,10 +98,11 @@ export default [
       },
       {
         fieldName: 'objformattype',
-        type: 'textfield',
+        type: 'combobox',
         label: 'Format Type',
         model: 'screenobject.objformattype',
-        format: 'string'
+        format: 'string',
+        cls: 'formattype'
       },
       {
         fieldName: 'objformat',
@@ -73,7 +110,29 @@ export default [
         label: 'Format',
         model: 'screenobject.objformat',
         format: 'string'
-      }
+      },
+      {
+        fieldName: 'reltabpagepgm',
+        type: 'textfield',
+        label: 'Related Program',
+        model: 'screenobject.reltabpagepgm',
+        format: 'string'
+      },
+      {
+        fieldName: 'userdefnum',
+        type: 'textfield',
+        label: 'UDF Number',
+        model: 'screenobject.userdefnum',
+        format: 'string'
+      },
+      {
+        fieldName: 'userdeftype',
+        type: 'combobox',
+        label: 'UDF Type',
+        model: 'screenobject.userdeftype',
+        format: 'string',
+        cls: 'udftype'
+      }      
     ]
   },
   {
@@ -83,7 +142,7 @@ export default [
     children: [
       {
         fieldName: 'objlabelcode',
-        type: 'combobox',
+        type: 'label',
         label: 'Label Code',
         model: 'screenobject.objlabelcode',
         format: 'string'
@@ -422,6 +481,135 @@ export default [
         label: 'Disable My Graphs',
         model: 'screenobject.disablemygraphs',
         format: 'boolean'
+      }
+    ]
+  },
+  {
+    type: 'text',
+    label: 'Screen Child Object Information'
+  },
+  {
+    fieldName: 'childobjinfopanel',
+    type: 'panel',
+    children: [
+      {
+        fieldName: 'childobjinfopanel1',
+        type: 'group',
+        children: [
+          {
+            fieldName: 'childobjname',
+            type: 'textfield',
+            label: 'Object Name',
+            model: 'screenchildobject.objname'
+          },
+          {
+            fieldName: 'childobjtype',
+            type: 'combobox',
+            label: 'Object Type',
+            model: 'screenchildobject.objtype',
+            cls: 'childobjtype'
+          },
+          {
+            fieldName: 'childobjparent',
+            type: 'combobox',
+            label: 'Object Parent',
+            model: 'screenchildobject.objparent'
+          },
+          {
+            fieldName: 'childobjseq',
+            type: 'textfield',
+            label: 'Object Sequence',
+            model: 'screenchildobject.objseq'
+          }
+        ]
+      },
+      {
+        fieldName: 'childobjenable',
+        type: 'checkbox',
+        label: 'Object Enabled',
+        model: 'screenchildobject.objenabled'
+      },
+      {
+        fieldName: 'childobjvisible',
+        type: 'checkbox',
+        label: 'Object Visible',
+        model: 'screenchildobject.objvisible'
+      }
+    ]
+  },
+  {
+    fieldName: 'childobjlabelpanel',
+    type: 'panel',
+    label: 'Label and Initial Value',
+    children: [
+      {
+        fieldName: 'childobjlabelcode',
+        type: 'label',
+        label: 'Label Code',
+        model: 'screenchildobject.objlabelcode'
+      },
+      {
+        fieldName: 'childobjinitialvalue',
+        type: 'textfield',
+        label: 'Initial Value',
+        model: 'screenchildobject.objinitialvalue'
+      },
+      {
+        fieldName: 'childobjimage',
+        type: 'textfield',
+        label: 'Image',
+        model: 'screenchildobject.objimage'
+      },
+      {
+        fieldName: 'childobjuserdefnum',
+        type: 'textfield',
+        label: 'UDF Number',
+        model: 'screenchildobject.userdefnum'
+      },
+      {
+        fieldName: 'childobjuserdeftype',
+        type: 'combobox',
+        label: 'UDF Type',
+        model: 'screenchildobject.userdeftype',
+        cls: 'udftype'
+      }
+    ]
+  },
+  {
+    fieldName: 'childobjgridattr',
+    type: 'panel',
+    label: 'Grid Column Attribute',
+    children: [
+      {
+        fieldName: 'childobjrelatedtable',
+        type: 'textfield',
+        label: 'Related Table',
+        model: 'screenchildobject.relatedtable'
+      },
+      {
+        fieldName: 'childobjrelatedfield',
+        type: 'textfield',
+        label: 'Related Field',
+        model: 'screenchildobject.relatedfield'
+      },
+      {
+        fieldName: 'childobjformattype',
+        type: 'combobox',
+        label: 'Format Type',
+        model: 'screenchildobject.objformattype',
+        cls: 'formattype'
+      },
+      {
+        fieldName: 'childobjformat',
+        type: 'textfield',
+        label: 'Format',
+        model: 'screenchildobject.objformat'
+      },
+      {
+        fieldName: 'childobjdropname',
+        type: 'textfield',
+        label: 'List Name',
+        model: 'screenchildobject.dropname'
       }
     ]
   }

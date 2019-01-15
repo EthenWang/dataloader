@@ -46,7 +46,7 @@
           </a-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-          <screen-control/>
+          <data-control type="screen"/>
         </a-layout-content>
       </a-layout>
     </a-layout-content>
@@ -54,12 +54,12 @@
 </template>
 
 <script>
-import ScreenControl from './components/ScreenControl';
+import DataControl from './components/DataControl.vue';
 
 export default {
   name: 'App',
   components: {
-    ScreenControl
+    DataControl
   },
   data () {
     return {
