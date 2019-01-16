@@ -16,14 +16,11 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+import { ObjectProps } from '@/models';
 
 @Component
 export default class SearchField extends Vue {
-  @Prop(Object) props!: {
-    label: string,
-    model: string,
-    type: 'label',
-  };
+  @Prop(Object) props!: ObjectProps;
 
   get value() {
     if (this.props.model) {
@@ -33,7 +30,10 @@ export default class SearchField extends Vue {
   }
 
   onSearch(value: string) {
-
+    this.$store.dispatch('search', {
+      obj: this.props,
+      value
+    })
   }
 
   onSelectChange(value: string) {

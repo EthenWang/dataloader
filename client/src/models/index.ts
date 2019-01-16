@@ -8,5 +8,13 @@ interface Screen {
     screenchildobject?: ScreenChildObjectModel[];
 }
 
-export { Screen, ScreenModel, ScreenObjectModel, ScreenChildObjectModel, Translation, Message }
+interface ObjectProps {
+  label: string,
+  model: string,
+  type: 'panel' | 'collapse' | 'collapse-panel' | 'group' | 'textfield' |
+        'search' | 'label' | 'checkbox' | 'combobox' | 'grid' | 'text',
+  cls?: string
+}
+
+export { Screen, ScreenModel, ScreenObjectModel, ScreenChildObjectModel, Translation, Message, ObjectProps }
 

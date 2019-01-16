@@ -30,17 +30,13 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import SearchField from './SearchField.vue';
+import { ObjectProps } from '@/models';
 
 @Component({
   components: { SearchField }
 })
 export default class ScreenObject extends Vue {
-  @Prop(Object) props!: {
-    label: string,
-    model: string,
-    type: 'textfield' | 'search' | 'label' | 'checkbox' | 'combobox',
-    cls?: string
-  };
+  @Prop(Object) props!: ObjectProps;
 
   data() {
     let items: string[] = [];

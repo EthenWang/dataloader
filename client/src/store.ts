@@ -3,27 +3,35 @@ import Vuex from 'vuex';
 import { Screen, Translation, Message } from '@/models';
 import * as _ from 'lodash';
 import axios from 'axios';
+import { ObjectProps } from '@/models';
+import * as VueCookies from 'vue-cookies';
 
 Vue.use(Vuex);
 
+interface ActionPayload extends ObjectProps {
+  value: string
+}
+
 export default new Vuex.Store({
   state: {
+    serverUrl: '',
     screen: {} as Screen,
     translations: new Array<Translation>(),
     messages: new Array<Message>()
   },
   mutations: {
-    setScreenModel(state, payload: {
-      path: string,
-      type: string,
-      value: string | boolean | number | null
-    }) {
-      state.screen = _.set({ ...state.screen }, payload.path, payload.value);
+    setScreenModel(state, payload: ActionPayload) {
+      state.screen = _.set({ ...state.screen }, payload.model, payload.value);
     }
   },
   actions: {
-    getLabelCode({ commit }, label: string) {
-      axios.post(localStorage.getItem('serverUrl') || '', label);
+    search({ commit, state }, payload: ActionPayload) {
+      if (!payload) return;
+      switch (payload.type) {
+        case 'label':
+          axios.post(`${state.serverUrl}/label/search` || '', payload.value);
+          break;
+      }
     }
   },
 });

@@ -3,7 +3,7 @@ import { CreateElement, VNode } from 'vue';
 export interface ObjectDefinition {
   fieldName: string;
   type: 'panel' | 'collapse' | 'collapse-panel' | 'group' | 'textfield' |
-        'search' | 'checkbox' | 'combobox' | 'grid' | 'text';
+        'search' | 'label' | 'checkbox' | 'combobox' | 'grid' | 'text';
   label?: string;
   model?: string;
   format?: string;

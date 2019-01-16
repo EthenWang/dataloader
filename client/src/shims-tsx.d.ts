@@ -1,5 +1,6 @@
 import Vue, { VNode } from 'vue';
 import _ from 'lodash';
+import VueCookies from 'vue-cookies';
 
 declare global {
   namespace JSX {
@@ -16,6 +17,7 @@ declare global {
 declare module 'vue/types/vue' {
 // 3. 声明为 Vue 补充的东西
   interface Vue {
-    $_: _.LoDashStatic
+    $_: _.LoDashStatic,
+    $cookies: VueCookies.VueCookies,
   }
 }
