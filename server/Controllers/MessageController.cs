@@ -4,13 +4,13 @@ namespace Server.Controllers
     using System.Collections.Generic;
     using Microsoft.AspNetCore.Mvc;
     using Server.Services;
-    using Server.Models.Screen;
+    using Server.Models.Messages;
 
     [Route("api/[controller]")]
     [ApiController]
-    public class ScreenController : DataController<Screen>
+    public class MessagesController : DataController<Messages>
     {
-        public ScreenController(IDataLoader dataloader)
-            : base(dataloader, DataTypes.Screen) {}
+        public MessagesController(IDataLoader dataloader)
+            : base(dataloader, DataTypes.Messages) {}
     }
 }

@@ -83,16 +83,14 @@ export default class ScreenObject extends Vue {
     } 
   }) {
     this.$store.commit('setScreenModel', {
-      path: this.props.model,
-      type: this.props.type,
+      ...this.props,
       value: this.props.type === 'checkbox' ? e.target.checked : e.target.value
     });
   }
 
   onSelectChange(value: string) {
     this.$store.commit('setScreenModel', {
-      path: this.props.model,
-      type: this.props.type,
+      ...this.props,
       value
     });
   }

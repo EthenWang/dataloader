@@ -4,7 +4,7 @@
       style="width: 100%"
       :value="value" 
       @search="onSearch"
-      @change="onSelectChange"
+      @change="onChange"
     >
       <a-input>
         <a-icon slot="suffix" type="search" />
@@ -31,15 +31,14 @@ export default class SearchField extends Vue {
 
   onSearch(value: string) {
     this.$store.dispatch('search', {
-      obj: this.props,
+      ...this.props,
       value
     })
   }
 
-  onSelectChange(value: string) {
+  onChange(value: string) {
     this.$store.commit('setScreenModel', {
-      path: this.props.model,
-      type: this.props.type,
+      ...this.props,
       value
     });
   }

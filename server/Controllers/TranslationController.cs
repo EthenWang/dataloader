@@ -1,20 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-
 namespace Server.Controllers
 {
-    [Route("api/label")]
+    using System;
+    using System.Collections.Generic;
+    using Microsoft.AspNetCore.Mvc;
+    using Server.Services;
+    using Server.Models.Translation;
+
+    [Route("api/[controller]")]
     [ApiController]
-    public class TranslationController : ControllerBase
+    public class TranslationController : DataController<Translation>
     {
-        [HttpPost("api/label/search")]
-        public ActionResult<IList<object>> Search([FromBody] string labelText)
-        {
-            return null;
-        }
+        public TranslationController(IDataLoader dataloader)
+            : base(dataloader, DataTypes.Translation) {}
     }
 }

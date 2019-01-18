@@ -14,7 +14,7 @@ interface ActionPayload extends ObjectProps {
 
 export default new Vuex.Store({
   state: {
-    serverUrl: '',
+    serverUrl: 'localhost:5050',
     screen: {} as Screen,
     translations: new Array<Translation>(),
     messages: new Array<Message>()
@@ -27,11 +27,13 @@ export default new Vuex.Store({
   actions: {
     search({ commit, state }, payload: ActionPayload) {
       if (!payload) return;
-      switch (payload.type) {
+      /*switch (payload.type) {
         case 'label':
-          axios.post(`${state.serverUrl}/label/search` || '', payload.value);
+          axios.post(`${state.serverUrl}/screen/${payload.value}`);
           break;
-      }
+      }*/
+      debugger;
+      axios.post(`${state.serverUrl}/screen/${payload.value}`);
     }
   },
 });
