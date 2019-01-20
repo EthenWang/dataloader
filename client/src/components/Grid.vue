@@ -35,7 +35,7 @@ export default class Grid extends Vue {
           this.$store.commit('setState', {
             ...this.props,
             path: this.props.itemPath,
-            value: record
+            value: selected ? record : null
           });
         }
       }

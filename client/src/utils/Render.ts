@@ -107,7 +107,7 @@ export class Render {
           { attrs: { span: 4 } }, 
           [ 
             this.createElement(
-              'ScreenObject', 
+              'ScreenField', 
               { 
                 props: { 
                   props: {

@@ -35,7 +35,7 @@ import { ObjectProps } from '@/models';
 @Component({
   components: { SearchField }
 })
-export default class ScreenObject extends Vue {
+export default class ScreenField extends Vue {
   @Prop(Object) props!: ObjectProps;
 
   data() {
