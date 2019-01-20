@@ -11,31 +11,33 @@ export default [
             fieldName: 'screenname',
             type: 'search',
             label: 'Screen Name',
-            model: 'screeninfo.screenname'
+            path: 'metaData.screeninfo.screenname',
+            cls: 'screenname'
           },
           {
             fieldName: 'screenprogram',
             type: 'textfield',
             label: 'Program Name',
-            model: 'screeninfo.screenprogram'
+            path: 'metaData.screeninfo.screenprogram'
           },
           {
             fieldName: 'screentype',
             type: 'textfield',
             label: 'Screen Type',
-            model: 'screeninfo.screentype'
+            path: 'metaData.screeninfo.screentype'
           },
           {
             fieldName: 'screentitle',
-            type: 'label',
+            type: 'search',
             label: 'Screen Title',
-            model: 'screeninfo.screentitle'
+            path: 'metaData.screeninfo.screentitle',
+            cls: 'label'
           },
           {
             fieldName: 'helpkey',
             type: 'textfield',
             label: 'Help Text',
-            model: 'screeninfo.helpkey'
+            path: 'metaData.screeninfo.helpkey'
           }
         ]
       },
@@ -43,7 +45,7 @@ export default [
         fieldName: 'virtualdates',
         type: 'checkbox',
         label: 'Virtual Dates',
-        model: 'screeninfo.virtualdates'
+        path: 'metaData.screeninfo.virtualdates'
       }
     ]
   },
@@ -53,7 +55,10 @@ export default [
   },
   {
     fieldName: 'fieldgrid',
-    type: 'grid'
+    type: 'grid',
+    path: 'metaData.screenobject',
+    itemPath: 'selectedObject',
+    cls: 'screenobject'
   },
   {
     fieldName: 'fieldinfosection',
@@ -64,14 +69,14 @@ export default [
         fieldName: 'screenobjname',
         type: 'textfield',
         label: 'Screen Object Name',
-        model: 'screenobject.screenobjname',
+        path: 'selectedObject.screenobjname',
         format: 'string'
       },
       {
         fieldName: 'objtype',
         type: 'combobox',
         label: 'Object Type',
-        model: 'screenobject.objtype',
+        path: 'selectedObject.objtype',
         format: 'string',
         cls: 'objtype'
       },
@@ -79,28 +84,28 @@ export default [
         fieldName: 'objparent',
         type: 'textfield',
         label: 'Object Parent',
-        model: 'screenobject.objparent',
+        path: 'selectedObject.objparent',
         format: 'string'
       },
       {
         fieldName: 'fieldtype',
         type: 'textfield',
         label: 'Field Type',
-        model: 'screenobject.fieldtype',
+        path: 'selectedObject.fieldtype',
         format: 'string'
       },
       {
         fieldName: 'specialcase',
         type: 'textfield',
         label: 'Special Case',
-        model: 'screenobject.specialcase',
+        path: 'selectedObject.specialcase',
         format: 'string'
       },
       {
         fieldName: 'objformattype',
         type: 'combobox',
         label: 'Format Type',
-        model: 'screenobject.objformattype',
+        path: 'selectedObject.objformattype',
         format: 'string',
         cls: 'formattype'
       },
@@ -108,28 +113,28 @@ export default [
         fieldName: 'objformat',
         type: 'textfield',
         label: 'Format',
-        model: 'screenobject.objformat',
+        path: 'selectedObject.objformat',
         format: 'string'
       },
       {
         fieldName: 'reltabpagepgm',
         type: 'textfield',
         label: 'Related Program',
-        model: 'screenobject.reltabpagepgm',
+        path: 'selectedObject.reltabpagepgm',
         format: 'string'
       },
       {
         fieldName: 'userdefnum',
         type: 'textfield',
         label: 'UDF Number',
-        model: 'screenobject.userdefnum',
+        path: 'selectedObject.userdefnum',
         format: 'string'
       },
       {
         fieldName: 'userdeftype',
         type: 'combobox',
         label: 'UDF Type',
-        model: 'screenobject.userdeftype',
+        path: 'selectedObject.userdeftype',
         format: 'string',
         cls: 'udftype'
       }      
@@ -142,37 +147,38 @@ export default [
     children: [
       {
         fieldName: 'objlabelcode',
-        type: 'label',
+        type: 'search',
         label: 'Label Code',
-        model: 'screenobject.objlabelcode',
-        format: 'string'
+        path: 'selectedObject.objlabelcode',
+        format: 'string',
+        cls: 'label'
       },
       {
         fieldName: 'objinitialvalue',
         type: 'textfield',
         label: 'Initial Value',
-        model: 'screenobject.objinitialvalue',
+        path: 'selectedObject.objinitialvalue',
         format: 'string'
       },
       {
         fieldName: 'objimage',
         type: 'combobox',
         label: 'Obj Image',
-        model: 'screenobject.objimage',
+        path: 'selectedObject.objimage',
         format: 'string'
       },
       {
         fieldName: 'linkedbrowseobj',
         type: 'textfield',
         label: 'Linked Drop Name',
-        model: 'screenobject.linkedbrowseobj',
+        path: 'selectedObject.linkedbrowseobj',
         format: 'string'
       },
       {
         fieldName: 'dropname',
         type: 'textfield',
         label: 'List Name',
-        model: 'screenobject.dropname',
+        path: 'selectedObject.dropname',
         format: 'string'
       }
     ]
@@ -186,49 +192,49 @@ export default [
         fieldName: 'objalign',
         type: 'combobox',
         label: 'Object Align',
-        model: 'screenobject.objalign',
+        path: 'selectedObject.objalign',
         format: 'number'
       },
       {
         fieldName: 'objcellalign',
         type: 'combobox',
         label: 'Cell Align',
-        model: 'screenobject.objcellalign',
+        path: 'selectedObject.objcellalign',
         format: 'number'
       },
       {
         fieldName: 'screenorder',
         type: 'textfield',
         label: 'Screen Order',
-        model: 'screenobject.screenorder',
+        path: 'selectedObject.screenorder',
         format: 'number'
       },
       {
         fieldName: 'objrow',
         type: 'textfield',
         label: 'Object Row',
-        model: 'screenobject.objrow',
+        path: 'selectedObject.objrow',
         format: 'number'
       },
       {
         fieldName: 'colspan',
         type: 'textfield',
         label: 'Row Span',
-        model: 'screenobject.colspan',
+        path: 'selectedObject.colspan',
         format: 'number'
       },
       {
         fieldName: 'objcol',
         type: 'textfield',
         label: 'Object Column',
-        model: 'screenobject.objcol',
+        path: 'selectedObject.objcol',
         format: 'number'
       },
       {
         fieldName: 'colspan',
         type: 'textfield',
         label: 'Column Span',
-        model: 'screenobject.colspan',
+        path: 'selectedObject.colspan',
         format: 'number'
       }
     ]
@@ -242,63 +248,63 @@ export default [
         fieldName: 'eventchoose',
         type: 'checkbox',
         label: 'CHOOSE',
-        model: 'screenobject.eventchoose',
+        path: 'selectedObject.eventchoose',
         format: 'boolean'
       },
       {
         fieldName: 'eventvaluechange',
         type: 'checkbox',
         label: 'VALUE_CHANGED',
-        model: 'screenobject.eventvaluechange',
+        path: 'selectedObject.eventvaluechange',
         format: 'boolean'
       },
       {
         fieldName: 'eventleave',
         type: 'checkbox',
         label: 'LEAVE',
-        model: 'screenobject.eventleave',
+        path: 'selectedObject.eventleave',
         format: 'boolean'
       },
       {
         fieldName: 'eventclick',
         type: 'checkbox',
         label: 'CLICK',
-        model: 'screenobject.eventclick',
+        path: 'selectedObject.eventclick',
         format: 'boolean'
       },
       {
         fieldName: 'evententry',
         type: 'checkbox',
         label: 'ENTRY',
-        model: 'screenobject.evententry',
+        path: 'selectedObject.evententry',
         format: 'boolean'
       },
       {
         fieldName: 'eventrowleave',
         type: 'checkbox',
         label: 'ROW LEAVE',
-        model: 'screenobject.eventrowleave',
+        path: 'selectedObject.eventrowleave',
         format: 'boolean'
       },
       {
         fieldName: 'eventdblclick',
         type: 'checkbox',
         label: 'DBL_CLICK',
-        model: 'screenobject.eventdblclick',
+        path: 'selectedObject.eventdblclick',
         format: 'boolean'
       },
       {
         fieldName: 'eventplus',
         type: 'checkbox',
         label: 'PLUS',
-        model: 'screenobject.eventplus',
+        path: 'selectedObject.eventplus',
         format: 'boolean'
       },
       {
         fieldName: 'eventupdown',
         type: 'checkbox',
         label: 'UP/DOWN',
-        model: 'screenobject.eventupdown',
+        path: 'selectedObject.eventupdown',
         format: 'boolean'
       }
     ]
@@ -312,56 +318,56 @@ export default [
         fieldName: 'objactive',
         type: 'checkbox',
         label: 'Obj Active',
-        model: 'screenobject.objactive',
+        path: 'selectedObject.objactive',
         format: 'boolean'
       },
       {
         fieldName: 'objunlabelled',
         type: 'checkbox',
         label: 'Obj Unlabelled',
-        model: 'screenobject.objunlabelled',
+        path: 'selectedObject.objunlabelled',
         format: 'boolean'
       },
       {
         fieldName: 'objenabled',
         type: 'checkbox',
         label: 'Obj Enabled',
-        model: 'screenobject.objenabled',
+        path: 'selectedObject.objenabled',
         format: 'boolean'
       },
       {
         fieldName: 'objvisible',
         type: 'checkbox',
         label: 'Obj Visible',
-        model: 'screenobject.objvisible',
+        path: 'selectedObject.objvisible',
         format: 'boolean'
       },
       {
         fieldName: 'objdisplay',
         type: 'checkbox',
         label: 'Obj Display',
-        model: 'screenobject.objdisplay',
+        path: 'selectedObject.objdisplay',
         format: 'boolean'
       },
       {
         fieldName: 'objrequired',
         type: 'checkbox',
         label: 'Obj Required',
-        model: 'screenobject.objrequired',
+        path: 'selectedObject.objrequired',
         format: 'boolean'
       },
       {
         fieldName: 'textcolon',
         type: 'checkbox',
         label: 'Text Colon',
-        model: 'screenobject.objcolon',
+        path: 'selectedObject.objcolon',
         format: 'boolean'
       },
       {
         fieldName: 'objneedsvalidation',
         type: 'checkbox',
         label: 'Obj Needs Validation',
-        model: 'screenobject.objneedsvalidation',
+        path: 'selectedObject.objneedsvalidation',
         format: 'boolean'
       }
     ]
@@ -379,14 +385,14 @@ export default [
             fieldName: 'objwidth',
             type: 'textfield',
             label: 'Width',
-            model: 'screenobject.objwidth',
+            path: 'selectedObject.objwidth',
             format: 'number'
           },
           {
             fieldName: 'objheigth',
             type: 'textfield',
             label: 'Heigth',
-            model: 'screenobject.objheight',
+            path: 'selectedObject.objheight',
             format: 'number'
           },
         ]
@@ -395,91 +401,91 @@ export default [
         fieldName: 'multrowselect',
         type: 'checkbox',
         label: 'Multi Row Select',
-        model: 'screenobject.multrowselect',
+        path: 'selectedObject.multrowselect',
         format: 'boolean'
       },
       {
         fieldName: 'noassign',
         type: 'checkbox',
         label: 'No Assign',
-        model: 'screenobject.noassign',
+        path: 'selectedObject.noassign',
         format: 'boolean'
       },
       {
         fieldName: 'cachebrowser',
         type: 'checkbox',
         label: 'Cache Browser',
-        model: 'screenobject.cachebrowser',
+        path: 'selectedObject.cachebrowser',
         format: 'boolean'
       },
       {
         fieldName: 'nosort',
         type: 'checkbox',
         label: 'No Sort',
-        model: 'screenobject.nosort',
+        path: 'selectedObject.nosort',
         format: 'boolean'
       },
       {
         fieldName: 'nopin',
         type: 'checkbox',
         label: 'No Pin',
-        model: 'screenobject.nopin',
+        path: 'selectedObject.nopin',
         format: 'boolean'
       },
       {
         fieldName: 'norowpin',
         type: 'checkbox',
         label: 'No Row Assign',
-        model: 'screenobject.norowpin',
+        path: 'selectedObject.norowpin',
         format: 'boolean'
       },
       {
         fieldName: 'nofilter',
         type: 'checkbox',
         label: 'No Filter',
-        model: 'screenobject.nofilter',
+        path: 'selectedObject.nofilter',
         format: 'boolean'
       },
       {
         fieldName: 'nosum',
         type: 'checkbox',
         label: 'No Sum',
-        model: 'screenobject.nosum',
+        path: 'selectedObject.nosum',
         format: 'boolean'
       },
       {
         fieldName: 'selectcell',
         type: 'checkbox',
         label: 'Select Cell',
-        model: 'screenobject.selectcell',
+        path: 'selectedObject.selectcell',
         format: 'boolean'
       },
       {
         fieldName: 'onecellleave',
         type: 'checkbox',
         label: 'One Cell Leave Proc',
-        model: 'screenobject.onecellleave',
+        path: 'selectedObject.onecellleave',
         format: 'boolean'
       },
       {
         fieldName: 'onecelldblclk',
         type: 'checkbox',
         label: 'One Cell Dbl Click Proc',
-        model: 'screenobject.onecellldblclk',
+        path: 'selectedObject.onecellldblclk',
         format: 'boolean'
       },
       {
         fieldName: 'disablesave',
         type: 'checkbox',
         label: 'Disable Save Column Order',
-        model: 'screenobject.disablesave',
+        path: 'selectedObject.disablesave',
         format: 'boolean'
       },
       {
         fieldName: 'disablemygraphs',
         type: 'checkbox',
         label: 'Disable My Graphs',
-        model: 'screenobject.disablemygraphs',
+        path: 'selectedObject.disablemygraphs',
         format: 'boolean'
       }
     ]
@@ -487,6 +493,13 @@ export default [
   {
     type: 'text',
     label: 'Screen Child Object Information'
+  },
+  {
+    fieldName: 'childobjgrid',
+    type: 'grid',
+    path: 'metaData.screenchildobject',
+    itemPath: 'selectedChildObject',
+    cls: 'screenchildobject'
   },
   {
     fieldName: 'childobjinfopanel',
@@ -500,26 +513,26 @@ export default [
             fieldName: 'childobjname',
             type: 'textfield',
             label: 'Object Name',
-            model: 'screenchildobject.objname'
+            path: 'selectedChildObject.objname'
           },
           {
             fieldName: 'childobjtype',
             type: 'combobox',
             label: 'Object Type',
-            model: 'screenchildobject.objtype',
+            path: 'selectedChildObject.objtype',
             cls: 'childobjtype'
           },
           {
             fieldName: 'childobjparent',
             type: 'combobox',
             label: 'Object Parent',
-            model: 'screenchildobject.objparent'
+            path: 'selectedChildObject.objparent'
           },
           {
             fieldName: 'childobjseq',
             type: 'textfield',
             label: 'Object Sequence',
-            model: 'screenchildobject.objseq'
+            path: 'selectedChildObject.objseq'
           }
         ]
       },
@@ -527,13 +540,13 @@ export default [
         fieldName: 'childobjenable',
         type: 'checkbox',
         label: 'Object Enabled',
-        model: 'screenchildobject.objenabled'
+        path: 'selectedChildObject.objenabled'
       },
       {
         fieldName: 'childobjvisible',
         type: 'checkbox',
         label: 'Object Visible',
-        model: 'screenchildobject.objvisible'
+        path: 'selectedChildObject.objvisible'
       }
     ]
   },
@@ -544,33 +557,34 @@ export default [
     children: [
       {
         fieldName: 'childobjlabelcode',
-        type: 'label',
+        type: 'search',
         label: 'Label Code',
-        model: 'screenchildobject.objlabelcode'
+        path: 'selectedChildObject.objlabelcode',
+        cls: 'label'
       },
       {
         fieldName: 'childobjinitialvalue',
         type: 'textfield',
         label: 'Initial Value',
-        model: 'screenchildobject.objinitialvalue'
+        path: 'selectedChildObject.objinitialvalue'
       },
       {
         fieldName: 'childobjimage',
         type: 'textfield',
         label: 'Image',
-        model: 'screenchildobject.objimage'
+        path: 'selectedChildObject.objimage'
       },
       {
         fieldName: 'childobjuserdefnum',
         type: 'textfield',
         label: 'UDF Number',
-        model: 'screenchildobject.userdefnum'
+        path: 'selectedChildObject.userdefnum'
       },
       {
         fieldName: 'childobjuserdeftype',
         type: 'combobox',
         label: 'UDF Type',
-        model: 'screenchildobject.userdeftype',
+        path: 'selectedChildObject.userdeftype',
         cls: 'udftype'
       }
     ]
@@ -584,32 +598,32 @@ export default [
         fieldName: 'childobjrelatedtable',
         type: 'textfield',
         label: 'Related Table',
-        model: 'screenchildobject.relatedtable'
+        path: 'selectedChildObject.relatedtable'
       },
       {
         fieldName: 'childobjrelatedfield',
         type: 'textfield',
         label: 'Related Field',
-        model: 'screenchildobject.relatedfield'
+        path: 'selectedChildObject.relatedfield'
       },
       {
         fieldName: 'childobjformattype',
         type: 'combobox',
         label: 'Format Type',
-        model: 'screenchildobject.objformattype',
+        path: 'selectedChildObject.objformattype',
         cls: 'formattype'
       },
       {
         fieldName: 'childobjformat',
         type: 'textfield',
         label: 'Format',
-        model: 'screenchildobject.objformat'
+        path: 'selectedChildObject.objformat'
       },
       {
         fieldName: 'childobjdropname',
         type: 'textfield',
         label: 'List Name',
-        model: 'screenchildobject.dropname'
+        path: 'selectedChildObject.dropname'
       }
     ]
   }

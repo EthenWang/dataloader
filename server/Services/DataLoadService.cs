@@ -8,34 +8,50 @@ using Newtonsoft.Json.Linq;
 using Server.Services;
 using Server.Models.Translation;
 using Server.Models.Messages;
+using Server.Models.Screen;
 using System.Collections.Generic;
 
 namespace Server.Services
 {
+    using SearchResult = KeyValuePair<string, string>;
+
     public enum DataTypes { Screen, Translation, Messages }  // Name must match data folder suffix
     
     public enum Languages { Default, CS, DE, EN, ES, FR, JA, KO, NL, PT, RU, ZH }
 
     public class DataloadService : IDataLoader
     {
-        public DataloadService(IConfiguration configuration)
+        public DataloadService(IConfiguration configuration, IDataCache cache)
         {
             Configuration = configuration;
+            Cache = cache;
         }
 
         public IConfiguration Configuration { get; }
 
-        public Translation TranslationCollection { get; }
+        public IDataCache Cache { get; }
+
+        public Translation TranslationCollection { get; protected set; }
         
-        public Messages MessageCollection { get; }
+        public Messages MessageCollection { get; protected set; }
+
+        public IList<Screen> ScreenCollection { get; protected set; }
 
         public async Task<T> LoadAsync<T>(DataTypes type, string name)
         {
+            var data = Cache.LoadCache<T>(name);
+            if (data != null)
+            {
+                return data;
+            }
+
             try
             {
                 StreamReader file = File.OpenText(BuildFilePath(type, name));
                 var jsonObject = await JToken.ReadFromAsync(new JsonTextReader(file));
-                return jsonObject.ToObject<T>();
+                data = jsonObject.ToObject<T>();
+                Cache.SetCache(name, data);
+                return data;
             }
             catch(Exception e)
             {
@@ -43,29 +59,29 @@ namespace Server.Services
             }
         }    
 
-        public async Task<IEnumerable<(string Key, string Value)>> GetListAsync(DataTypes type, Languages lang = Languages.Default)
+        public async Task<IEnumerable<SearchResult>> GetListAsync(DataTypes type, Languages lang = Languages.Default)
         {
             try
             {
                 switch (type)
                 {
                     case DataTypes.Screen:
-                        return Directory.GetFiles(BuildDirPath(type))?.Select(s => (s, ""));
+                        return Directory.GetFiles(BuildDirPath(type))?.Select(s => new SearchResult(Path.GetFileNameWithoutExtension(s), ""));
                     case DataTypes.Translation:
                         {
                             var translation = await LoadAsync<Translation>(type, lang.ToString());
-                            return translation?.DsTranslation?.TtTranslation?.Select(t => (t.SdCode, t.SdText));
+                            return translation?.DsTranslation?.TtTranslation?.Select(t => new SearchResult(t.SdCode, t.SdText));
                         }
                     case DataTypes.Messages:
                         {
                             var messages = await LoadAsync<Messages>(type, lang.ToString());
-                            return messages?.DsMessages?.TtMessages?.Select(m => (m.MessageNumber.ToString(), m.MessageDescription));
+                            return messages?.DsMessages?.TtMessages?.Select(m => new SearchResult(m.MessageNumber.ToString(), m.MessageDescription));
                         }
                     default:
                         return null;
                 }
             }
-            catch(IOException e)
+            catch(Exception e)
             {
                 throw e;
             }

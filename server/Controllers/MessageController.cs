@@ -10,7 +10,7 @@ namespace Server.Controllers
     [ApiController]
     public class MessagesController : DataController<Messages>
     {
-        public MessagesController(IDataLoader dataloader)
-            : base(dataloader, DataTypes.Messages) {}
+        public MessagesController(IDataLoader dataLoader, IDataCache cache)
+            : base(dataLoader, cache, DataTypes.Messages) { }
     }
 }

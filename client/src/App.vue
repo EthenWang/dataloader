@@ -46,7 +46,7 @@
           </a-menu>
         </a-layout-sider>
         <a-layout-content :style="{ padding: '0 24px', minHeight: '280px' }">
-          <data-control type="screen"/>
+          <data-control module="screen"/>
         </a-layout-content>
       </a-layout>
     </a-layout-content>

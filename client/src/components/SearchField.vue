@@ -5,6 +5,7 @@
       :value="value" 
       @search="onSearch"
       @change="onChange"
+      @blur="onBlur"
     >
       <a-input>
         <a-icon slot="suffix" type="search" />
@@ -23,24 +24,28 @@ export default class SearchField extends Vue {
   @Prop(Object) props!: ObjectProps;
 
   get value() {
-    if (this.props.model) {
-      return this.$_.get(this.$store.state.screen, this.props.model);
-    }
-    return null;
+    return this.$store.getters.getState(this.props);
   }
 
   onSearch(value: string) {
     this.$store.dispatch('search', {
       ...this.props,
       value
-    })
+    });
   }
 
   onChange(value: string) {
-    this.$store.commit('setScreenModel', {
+    this.$store.commit('setState', {
       ...this.props,
       value
     });
+  }
+
+  onBlur() {
+    this.$store.dispatch('get', {
+      ...this.props,
+      value: this.value
+    })
   }
 }
 

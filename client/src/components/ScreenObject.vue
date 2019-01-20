@@ -7,7 +7,7 @@
       {{ props.label }}
     </a-checkbox>
   </a-form-item>
-  <search-field v-else-if="props.type === 'label' || props.type === 'search'" :props="props" />
+  <search-field v-else-if="props.type === 'search'" :props="props" />
   <a-form-item v-else :label="props.label" :colon="false">
     <a-select 
       v-if="props.type === 'combobox'" 
@@ -70,33 +70,26 @@ export default class ScreenObject extends Vue {
   }
 
   get value() {
-    if (this.props.model) {
-      return this.$_.get(this.$store.state.screen, this.props.model);
-    }
-    return null;
+    return this.$store.getters.getState(this.props);
   }
 
-  onInputChange(e:  { 
+  onInputChange(e: { 
     target: { 
       checked: boolean,
       value: string
     } 
   }) {
-    this.$store.commit('setScreenModel', {
+    this.$store.commit('setState', {
       ...this.props,
       value: this.props.type === 'checkbox' ? e.target.checked : e.target.value
     });
   }
 
   onSelectChange(value: string) {
-    this.$store.commit('setScreenModel', {
+    this.$store.commit('setState', {
       ...this.props,
       value
     });
-  }
-
-  onSearch(value: string) {
-
   }
 }
 </script>

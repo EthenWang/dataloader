@@ -10,7 +10,7 @@ namespace Server.Controllers
     [ApiController]
     public class TranslationController : DataController<Translation>
     {
-        public TranslationController(IDataLoader dataloader)
-            : base(dataloader, DataTypes.Translation) {}
+        public TranslationController(IDataLoader dataLoader, IDataCache cache)
+            : base(dataLoader, cache, DataTypes.Translation) { }
     }
 }

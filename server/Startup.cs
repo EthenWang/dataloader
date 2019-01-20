@@ -10,9 +10,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Server.Utils;
 using Server.Services;
 
-namespace server
+namespace Server
 {
     public class Startup
     {
@@ -26,8 +27,14 @@ namespace server
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+                .AddJsonOptions(option =>
+                {
+                    option.SerializerSettings.ContractResolver = new DataLoadContractResolver();
+                });
+
             services.AddScoped<IDataLoader, DataloadService>();
+            services.AddSingleton<IDataCache, DataCacheService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,8 +50,11 @@ namespace server
             }
 
             app.UseHttpsRedirection();
+            app.UseCors(builder => 
+                builder.WithOrigins("any")
+                       .AllowAnyHeader()
+                       .AllowAnyMethod());
             app.UseMvc();
-            app.UseCors("any");
         }
     }
 }

@@ -1,4 +1,5 @@
 server/obj/*
 server/bin/*
 server/.vscode/*
+server/.vs/*
 .vscode/*

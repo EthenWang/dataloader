@@ -1,11 +1,13 @@
 import { CreateElement, VNode } from 'vue';
+import { ModuleType } from '@/models';
 
 export interface ObjectDefinition {
   fieldName: string;
   type: 'panel' | 'collapse' | 'collapse-panel' | 'group' | 'textfield' |
         'search' | 'label' | 'checkbox' | 'combobox' | 'grid' | 'text';
   label?: string;
-  model?: string;
+  path?: string;
+  itemPath?: string;
   format?: string;
   cls?: string;
   colspan?: number;
@@ -15,14 +17,14 @@ export interface ObjectDefinition {
 const ComponentMap = {
   'panel': 'div',
   'group': 'div',
-  'grid': 'a-table',
+  'grid': 'Grid',
   'text': 'h2',
   'collapse': 'a-collapse',
   'collapse-panel': 'a-collapse-panel'
 }
 
 export class Render {
-  constructor(protected createElement: CreateElement) {}
+  constructor(private module: ModuleType, protected createElement: CreateElement) {}
 
   render(data: object[]) {
     return this.createElement('div', this.processData(data as ObjectDefinition[]));
@@ -57,14 +59,7 @@ export class Render {
             this.createElement('h3', [ data.label || '' ]),
             this.createElement(
               'a-row', 
-              { 
-                attrs: { 
-                  /*type: 'flex', 
-                  justify: 'space-between',
-                  align: 'bottom', */
-                  gutter: 16 
-                } 
-              }, 
+              { attrs: { gutter: 16 } }, 
               [ children ]
             ),
             this.createElement('a-divider')
@@ -73,7 +68,7 @@ export class Render {
       case 'group':
         return this.createElement(
           ComponentMap[data.type],
-          { style: { 'padding-left': '8px' } },
+          { style: { 'padding-left': '8lpx' } },
           [ 
             this.createElement(
               'a-row', 
@@ -88,14 +83,41 @@ export class Render {
           ]
         );
       case 'grid':
-        return this.createElement('div', [ this.createElement(ComponentMap[data.type]) ]);
+        return this.createElement(
+          'div', 
+          [ 
+            this.createElement(
+              ComponentMap[data.type], 
+              { 
+                props: { 
+                  props: {
+                    ...data,
+                    module: this.module
+                  } 
+                } 
+              }
+            ) 
+          ]
+        );
       case 'text':
         return this.createElement(ComponentMap[data.type], [ data.label || '' ]);
       default:
         return this.createElement(
           'a-col', 
           { attrs: { span: 4 } }, 
-          [ this.createElement('ScreenObject', { props: { props: data } } )]
+          [ 
+            this.createElement(
+              'ScreenObject', 
+              { 
+                props: { 
+                  props: {
+                    ...data,
+                    module: this.module
+                  } 
+                } 
+              } 
+            )
+          ]
         );
     }
   }
