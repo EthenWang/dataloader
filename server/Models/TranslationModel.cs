@@ -6,22 +6,50 @@ namespace Server.Models.Translation
     using System.Collections.Generic;
 
     using System.Globalization;
+    using System.Linq;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Serialization;
 
-    public partial class Translation
+    public partial class Translation : IDataFile
     {
         [JsonProperty("ds-translation")]
         public DsTranslation DsTranslation { get; set; }
+
+        public IEnumerable<IScreenData> GetAll() => DsTranslation.TtTranslation;
+
+        public IScreenData Get(Func<IScreenData, bool> searchFunc) => DsTranslation.TtTranslation.FirstOrDefault(searchFunc);
+
+        public IScreenData GetByKey(string key) => DsTranslation.TtTranslation.FirstOrDefault(x => x.SdCode == key);
+
+        public string Serialize() => this.ToJson();
+
+        public bool ContainsKey(string sdCode) => DsTranslation.TtTranslation.Any(x => x.SdCode == sdCode);
+
+        public void CreateOrUpdate(IScreenData screenData)
+        {
+            TtTranslation ttTranslation = screenData as TtTranslation;
+            if (ContainsKey(ttTranslation.SdCode))
+            {
+                DsTranslation.TtTranslation[DsTranslation.TtTranslation.FindIndex(x => x.SdCode == ttTranslation.SdCode)] = ttTranslation;
+            }
+            else
+            {
+                DsTranslation.TtTranslation.Add(ttTranslation);
+            }
+        }
+
+        public void CreateOrUpdate<T>(JObject screenData) where T : IScreenData => CreateOrUpdate(screenData.ToObject<T>());
     }
 
     public partial class DsTranslation
     {
         [JsonProperty("tt-translation")]
-        public TtTranslation[] TtTranslation { get; set; }
+        public List<TtTranslation> TtTranslation { get; set; }
     }
 
-    public partial class TtTranslation
+    public partial class TtTranslation : IScreenData
     {
         [JsonProperty("system-id")]
         public string SystemId { get; set; }
@@ -82,16 +110,26 @@ namespace Server.Models.Translation
 
         [JsonProperty("sd-abbreviation")]
         public string SdAbbreviation { get; set; }
+
+        public string Serialize() => this.ToJson();
+
+        public KeyValuePair<string, string> ToSearchResult() => new KeyValuePair<string, string>(SdCode, SdText);
     }
 
     public partial class Translation
     {
-        public static Translation FromJson(string json) => JsonConvert.DeserializeObject<Translation>(json, Server.Models.Translation.Converter.Settings);
+        public static Translation FromJson(string json) => JsonConvert.DeserializeObject<Translation>(json, Server.Models.Translation.Converter.SettingsWithoutDash);
+    }
+
+    public partial class TtTranslation
+    {
+        public static TtTranslation FromJson(string json) => JsonConvert.DeserializeObject<TtTranslation>(json, Server.Models.Translation.Converter.SettingsWithoutDash);
     }
 
     public static class Serialize
     {
         public static string ToJson(this Translation self) => JsonConvert.SerializeObject(self, Server.Models.Translation.Converter.Settings);
+        public static string ToJson(this TtTranslation self) => JsonConvert.SerializeObject(self, Server.Models.Translation.Converter.Settings);
     }
 
     internal static class Converter
@@ -100,9 +138,41 @@ namespace Server.Models.Translation
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
+            Formatting = Formatting.Indented,
+            Converters = {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+
+        public static readonly JsonSerializerSettings SettingsWithoutDash = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Formatting = Formatting.Indented,
+            ContractResolver = new NoDashContractResolver(),
             Converters = {
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
     }
+
+    internal class NoDashContractResolver : DefaultContractResolver
+    {
+        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
+        {
+            // Let the base class create all the JsonProperties 
+            // using the short names
+            IList<JsonProperty> list = base.CreateProperties(type, memberSerialization);
+
+            // Now inspect each property and replace the 
+            // short name with the real property name
+            foreach (JsonProperty prop in list)
+            {
+                prop.PropertyName = prop.UnderlyingName.ToLower();
+            }
+
+            return list;
+        }
+    }
+
 }

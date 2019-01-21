@@ -5,6 +5,8 @@ namespace Server.Services
     using Server.Models.Translation;
     using Server.Models.Messages;
     using Server.Models.Screen;
+    using Server.Models;
+    using Newtonsoft.Json.Linq;
 
     public interface IDataLoader
     {
@@ -12,6 +14,9 @@ namespace Server.Services
         Messages MessageCollection { get; }
         IList<Screen> ScreenCollection { get; }
         Task<IEnumerable<KeyValuePair<string, string>>> GetListAsync(DataTypes type, Languages lang = Languages.Default);
-        Task<T> LoadAsync<T>(DataTypes type, string name);
+        Task<IDataFile> LoadAsync<T>(DataTypes type, string name) where T : IDataFile;
+        Task<IScreenData> LoadAsync<T>(DataTypes type, string name, string key) where T : IDataFile;
+        Task<string> SaveAsync(DataTypes type, string name, JObject data);
+        Task<string> SaveAsync(DataTypes type, string name, string key, JObject data);
     }
 }
