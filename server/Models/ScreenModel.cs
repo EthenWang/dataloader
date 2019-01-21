@@ -47,7 +47,7 @@ namespace Server.Models.Screen
                 }
             }
 
-            if (screenData is TtScreenChildObj ttScreenChildObj)
+            else if (screenData is TtScreenChildObj ttScreenChildObj)
             {
                 if (DsScreen.TtScreenChildObj.Any(x => x.ObjName == ttScreenChildObj.ObjName))
                 {
@@ -61,6 +61,22 @@ namespace Server.Models.Screen
         }
 
         public void CreateOrUpdate<T>(JObject screenData) where T : IScreenData => CreateOrUpdate(screenData.ToObject<T>());
+
+        public void DeleteByKey(string key)
+        {
+            if (DsScreen.TtScreenObj.Any(x => x.ScreenObjName == key))
+            {
+                DsScreen.TtScreenObj.RemoveAll(x => x.ScreenObjName == key);
+            }
+            else if (DsScreen.TtScreenChildObj.Any(x => x.ObjName == key))
+            {
+                DsScreen.TtScreenChildObj.RemoveAll(x => x.ObjName == key);
+            }
+            else
+            {
+                throw new ArgumentException("Not found");
+            }
+        }
     }
 
     public partial class DsScreen : IScreenData

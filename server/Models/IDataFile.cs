@@ -11,6 +11,7 @@ namespace Server.Models
         IEnumerable<IScreenData> GetAll();
         IScreenData Get(Func<IScreenData, bool> searchFunc);
         IScreenData GetByKey(string key);
+        void DeleteByKey(string key);
         string Serialize();
         void CreateOrUpdate(IScreenData screenData);
         void CreateOrUpdate<T>(JObject screenData) where T : IScreenData;

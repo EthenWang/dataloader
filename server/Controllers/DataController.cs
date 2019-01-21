@@ -96,6 +96,32 @@ namespace Server.Controllers
             }
         }
 
+        [HttpDelete("{name}")]
+        public async Task<string> DeleteAsync(string name)
+        {
+            try
+            {
+                return await Dataloader.DeleteAsync<T>(Type, name);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("{name}/{key}")]
+        public async Task<string> DeleteAsync(string name, string key)
+        {
+            try
+            {
+                return await Dataloader.DeleteAsync<T>(Type, name, key);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         [HttpGet("searchcode/{value}")]
         public async Task<IEnumerable<SearchResult>> SearchCode(string value)
         {

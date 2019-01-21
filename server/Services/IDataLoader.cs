@@ -18,5 +18,8 @@ namespace Server.Services
         Task<IScreenData> LoadAsync<T>(DataTypes type, string name, string key) where T : IDataFile;
         Task<string> SaveAsync(DataTypes type, string name, JObject data);
         Task<string> SaveAsync(DataTypes type, string name, string key, JObject data);
+        Task<string> DeleteAsync<T>(DataTypes type, string name) where T : IDataFile;
+        Task<string> DeleteAsync<T>(DataTypes type, string name, string key) where T : IDataFile;
+
     }
 }

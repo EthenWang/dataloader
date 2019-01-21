@@ -41,6 +41,18 @@ namespace Server.Models.Translation
         }
 
         public void CreateOrUpdate<T>(JObject screenData) where T : IScreenData => CreateOrUpdate(screenData.ToObject<T>());
+
+        public void DeleteByKey(string key)
+        {
+            if (DsTranslation.TtTranslation.Any(x => x.SdCode == key))
+            {
+                DsTranslation.TtTranslation.RemoveAll(x => x.SdCode == key);
+            }
+            else
+            {
+                throw new ArgumentException("Not found");
+            }
+        }
     }
 
     public partial class DsTranslation

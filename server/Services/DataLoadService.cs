@@ -207,6 +207,71 @@ namespace Server.Services
             }
         }
 
+        public async Task<string> DeleteAsync<T>(DataTypes type, string name) where T : IDataFile
+        {
+            string filePath = BuildFilePath(type, name);
+            try
+            {
+                if(!File.Exists(filePath))
+                {
+                    throw new IOException("File not found");
+                }
+                File.Delete(filePath);
+                Cache.Clear(type);
+                return "Success";
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public async Task<string> DeleteAsync<T>(DataTypes type, string name, string key) where T : IDataFile
+        {
+            FileStream file = null;
+            StreamReader sr = null;
+            StreamWriter sw = null;
+            IDataFile data = Cache.LoadCache<T>(type, name);
+            if (data != null)
+            {
+                data.DeleteByKey(key);
+
+                file = File.Open(BuildFilePath(type, name), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+                sw = new StreamWriter(file);
+                await sw.WriteAsync(data.Serialize());
+                Cache.SetCache(type, name, data);
+                return "Success";
+            }
+
+            try
+            {
+                file = File.Open(BuildFilePath(type, name), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                sr = new StreamReader(file);
+                var jsonObject = await JToken.ReadFromAsync(new JsonTextReader(sr));
+                sr.Close();
+                file.Close();
+
+                data = jsonObject.ToObject<T>();
+                data.DeleteByKey(key);
+
+                file = File.Open(BuildFilePath(type, name), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
+                sw = new StreamWriter(file);
+                await sw.WriteAsync(data.Serialize());
+                Cache.SetCache(type, name, data);
+                return "Success";
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                sr?.Close();
+                sw.Close();
+                file?.Close();
+            }
+        }
+
         public async Task<IEnumerable<SearchResult>> GetListAsync(DataTypes type, Languages lang = Languages.Default)
         {
             try

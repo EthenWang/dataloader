@@ -43,6 +43,17 @@ namespace Server.Models.Messages
 
         public void CreateOrUpdate<T>(JObject screenData) where T : IScreenData => CreateOrUpdate(screenData.ToObject<T>());
 
+        public void DeleteByKey(string key)
+        {
+            if (ContainsKey(long.Parse(key)))
+            {
+                DsMessages.TtMessages.RemoveAll(x => x.MessageNumber == long.Parse(key));
+            }
+            else
+            {
+                throw new ArgumentException("Not found");
+            }
+        }
     }
 
     public partial class DsMessages
