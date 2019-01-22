@@ -4,28 +4,98 @@ namespace Server.Models.Screen
     using System.Collections.Generic;
 
     using System.Globalization;
+    using System.Linq;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Serialization;
 
-    public partial class Screen
+    public partial class Screen : IDataFile
     {
         [JsonProperty("ds-screen")]
         public DsScreen DsScreen { get; set; }
+
+        public IEnumerable<IScreenData> GetAll() => new List<IScreenData> { DsScreen };
+
+        public IScreenData Get(Func<IScreenData, bool> searchFunc) => DsScreen;
+
+        public IScreenData GetByKey(string key)
+        {
+            if (DsScreen.TtScreenObj.FirstOrDefault(x => x.ScreenObjName == key) != null)
+            {
+                return DsScreen.TtScreenObj.FirstOrDefault(x => x.ScreenObjName == key);
+            }
+            else
+            {
+                return DsScreen.TtScreenChildObj.FirstOrDefault(x => x.ObjName == key);
+            }
+        }
+
+        public string Serialize() => this.ToJson();
+
+        public void CreateOrUpdate(IScreenData screenData)
+        {
+            if (screenData is TtScreenObj ttScreenObj)
+            {
+                if (DsScreen.TtScreenObj.Any(x => x.ScreenObjName == ttScreenObj.ScreenObjName))
+                {
+                    DsScreen.TtScreenObj[DsScreen.TtScreenObj.FindIndex(x => x.ScreenObjName == ttScreenObj.ScreenObjName)] = ttScreenObj;
+                }
+                else
+                {
+                    DsScreen.TtScreenObj.Add(ttScreenObj);
+                }
+            }
+
+            else if (screenData is TtScreenChildObj ttScreenChildObj)
+            {
+                if (DsScreen.TtScreenChildObj.Any(x => x.ObjName == ttScreenChildObj.ObjName))
+                {
+                    DsScreen.TtScreenChildObj[DsScreen.TtScreenChildObj.FindIndex(x => x.ObjName == ttScreenChildObj.ObjName)] = ttScreenChildObj;
+                }
+                else
+                {
+                    DsScreen.TtScreenChildObj.Add(ttScreenChildObj);
+                }
+            }
+        }
+
+        public void CreateOrUpdate<T>(JObject screenData) where T : IScreenData => CreateOrUpdate(screenData.ToObject<T>());
+
+        public void DeleteByKey(string key)
+        {
+            if (DsScreen.TtScreenObj.Any(x => x.ScreenObjName == key))
+            {
+                DsScreen.TtScreenObj.RemoveAll(x => x.ScreenObjName == key);
+            }
+            else if (DsScreen.TtScreenChildObj.Any(x => x.ObjName == key))
+            {
+                DsScreen.TtScreenChildObj.RemoveAll(x => x.ObjName == key);
+            }
+            else
+            {
+                throw new ArgumentException("Not found");
+            }
+        }
     }
 
-    public partial class DsScreen
+    public partial class DsScreen : IScreenData
     {
         [JsonProperty("tt-screen")]
-        public TtScreen[] TtScreen { get; set; }
+        public List<TtScreen> TtScreen { get; set; }
 
         [JsonProperty("tt-screen-obj")]
-        public TtScreenObj[] TtScreenObj { get; set; }
+        public List<TtScreenObj> TtScreenObj { get; set; }
 
         [JsonProperty("tt-screen-child-obj")]
-        public TtScreenChildObj[] TtScreenChildObj { get; set; }
+        public List<TtScreenChildObj> TtScreenChildObj { get; set; }
+
+        public KeyValuePair<string, string> ToSearchResult() => new KeyValuePair<string, string>(TtScreen.FirstOrDefault()?.ScreenName, TtScreen.FirstOrDefault()?.ScreenProgram);
+
+        public string Serialize() => this.ToJson();
     }
 
-    public partial class TtScreen
+    public partial class TtScreen : IScreenData
     {
         [JsonProperty("system-id")]
         public string SystemId { get; set; }
@@ -119,9 +189,13 @@ namespace Server.Models.Screen
 
         [JsonProperty("auto-scr-sync")]
         public bool AutoScrSync { get; set; }
+
+        public string Serialize() => this.ToJson();
+
+        public KeyValuePair<string, string> ToSearchResult() => new KeyValuePair<string, string>(ScreenName, ScreenProgram);
     }
 
-    public partial class TtScreenChildObj
+    public partial class TtScreenChildObj : IScreenData
     {
         [JsonProperty("system-id")]
         public string SystemId { get; set; }
@@ -257,9 +331,13 @@ namespace Server.Models.Screen
 
         [JsonProperty("field-type")]
         public string FieldType { get; set; }
+
+        public KeyValuePair<string, string> ToSearchResult() => new KeyValuePair<string, string>(ObjName, ObjParent);
+
+        public string Serialize() => this.ToJson();
     }
 
-    public partial class TtScreenObj
+    public partial class TtScreenObj : IScreenData
     {
         [JsonProperty("system-id")]
         public string SystemId { get; set; }
@@ -479,16 +557,44 @@ namespace Server.Models.Screen
 
         [JsonProperty("obj-created-by-screen-designer")]
         public bool ObjCreatedByScreenDesigner { get; set; }
+
+        public KeyValuePair<string, string> ToSearchResult() => new KeyValuePair<string, string>(ObjParent, FieldName);
+
+        public string Serialize() => this.ToJson();
     }
 
     public partial class Screen
     {
-        public static Screen FromJson(string json) => JsonConvert.DeserializeObject<Screen>(json, Server.Models.Screen.Converter.Settings);
+        public static Screen FromJson(string json) => JsonConvert.DeserializeObject<Screen>(json, Server.Models.Screen.Converter.SettingsWithoutDash);
+    }
+
+    public partial class DsScreen
+    {
+        public static DsScreen FromJson(string json) => JsonConvert.DeserializeObject<DsScreen>(json, Server.Models.Screen.Converter.SettingsWithoutDash);
+    }
+
+    public partial class TtScreen
+    {
+        public static TtScreen FromJson(string json) => JsonConvert.DeserializeObject<TtScreen>(json, Server.Models.Screen.Converter.SettingsWithoutDash);
+    }
+
+    public partial class TtScreenObj
+    {
+        public static TtScreenObj FromJson(string json) => JsonConvert.DeserializeObject<TtScreenObj>(json, Server.Models.Screen.Converter.SettingsWithoutDash);
+    }
+
+    public partial class TtScreenChildObj
+    {
+        public static TtScreenChildObj FromJson(string json) => JsonConvert.DeserializeObject<TtScreenChildObj>(json, Server.Models.Screen.Converter.SettingsWithoutDash);
     }
 
     public static class Serialize
     {
         public static string ToJson(this Screen self) => JsonConvert.SerializeObject(self, Server.Models.Screen.Converter.Settings);
+        public static string ToJson(this DsScreen self) => JsonConvert.SerializeObject(self, Server.Models.Screen.Converter.Settings);
+        public static string ToJson(this TtScreen self) => JsonConvert.SerializeObject(self, Server.Models.Screen.Converter.Settings);
+        public static string ToJson(this TtScreenObj self) => JsonConvert.SerializeObject(self, Server.Models.Screen.Converter.Settings);
+        public static string ToJson(this TtScreenChildObj self) => JsonConvert.SerializeObject(self, Server.Models.Screen.Converter.Settings);
     }
 
     internal static class Converter
@@ -497,6 +603,18 @@ namespace Server.Models.Screen
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
+            Formatting = Formatting.Indented,
+            Converters = {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+
+        public static readonly JsonSerializerSettings SettingsWithoutDash = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Formatting = Formatting.Indented,
+            ContractResolver = new Utils.DataLoadContractResolver(),
             Converters = {
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },

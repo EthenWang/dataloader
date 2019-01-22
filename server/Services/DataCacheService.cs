@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Server.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,14 +8,13 @@ namespace Server.Services
 {
     public class DataCacheService : IDataCache
     {
-        private Dictionary<string, Dictionary<string, dynamic>> cache = new Dictionary<string, Dictionary<string, dynamic>>();
+        private Dictionary<DataTypes, Dictionary<string, IDataFile>> cache = new Dictionary<DataTypes, Dictionary<string, IDataFile>>();
 
-        public T LoadCache<T>(string name)
+        public IDataFile LoadCache<T>(DataTypes type, string name) where T : IDataFile
         {
-            var typeName = typeof(T).ToString();
-            if (cache.ContainsKey(typeName))
+            if (cache.ContainsKey(type))
             {
-                var dict = cache[typeName];
+                var dict = cache[type];
                 if (dict?.ContainsKey(name) == true)
                 {
                     return dict[name];
@@ -23,14 +23,13 @@ namespace Server.Services
             return default(T);
         }
 
-        public void SetCache<T>(string name, T data)
+        public void SetCache<T>(DataTypes type, string name, T data) where T : IDataFile
         {
-            var typeName = typeof(T).ToString();
-            if (!cache.ContainsKey(typeName))
+            if (!cache.ContainsKey(type))
             {
-                cache.Add(typeName, new Dictionary<string, dynamic>());
+                cache.Add(type, new Dictionary<string, IDataFile>());
             }
-            var dict = cache[typeName];
+            var dict = cache[type];
             if (dict.ContainsKey(name))
             {
                 dict[name] = data;
@@ -40,12 +39,20 @@ namespace Server.Services
                 dict.Add(name, data);
             }
         }
-
+        
         public void Clear()
         {
-            foreach(var dict in cache)
+            foreach (var dict in cache)
             {
                 dict.Value?.Clear();
+            }
+        }
+
+        public void Clear(DataTypes type)
+        {
+            if (cache.ContainsKey(type))
+            {
+                cache[type].Clear();
             }
         }
     }

@@ -6,22 +6,63 @@ namespace Server.Models.Messages
     using System.Collections.Generic;
 
     using System.Globalization;
+    using System.Linq;
     using Newtonsoft.Json;
     using Newtonsoft.Json.Converters;
+    using Newtonsoft.Json.Linq;
+    using Newtonsoft.Json.Serialization;
+    using Server.Models;
 
-    public partial class Messages
+    public partial class Messages : IDataFile
     {
         [JsonProperty("ds-messages")]
         public DsMessages DsMessages { get; set; }
+
+        public IEnumerable<IScreenData> GetAll() => DsMessages.TtMessages;
+
+        public IScreenData Get(Func<IScreenData, bool> searchFunc) => DsMessages.TtMessages.FirstOrDefault(searchFunc);
+
+        public IScreenData GetByKey(string key) => DsMessages.TtMessages.FirstOrDefault(x => x.MessageNumber == long.Parse(key));
+
+        public string Serialize() => this.ToJson();
+
+        public bool ContainsKey(long messageNumber) => DsMessages.TtMessages.Any(x => x.MessageNumber == messageNumber);
+
+        public void CreateOrUpdate(IScreenData screenData)
+        {
+            TtMessage ttMessage = screenData as TtMessage;
+            if (ContainsKey(ttMessage.MessageNumber))
+            {
+                DsMessages.TtMessages[DsMessages.TtMessages.FindIndex(x => x.MessageNumber == ttMessage.MessageNumber)] = ttMessage;
+            }
+            else
+            {
+                DsMessages.TtMessages.Add(ttMessage);
+            }
+        }
+
+        public void CreateOrUpdate<T>(JObject screenData) where T : IScreenData => CreateOrUpdate(screenData.ToObject<T>());
+
+        public void DeleteByKey(string key)
+        {
+            if (ContainsKey(long.Parse(key)))
+            {
+                DsMessages.TtMessages.RemoveAll(x => x.MessageNumber == long.Parse(key));
+            }
+            else
+            {
+                throw new ArgumentException("Not found");
+            }
+        }
     }
 
     public partial class DsMessages
     {
         [JsonProperty("tt-messages")]
-        public TtMessage[] TtMessages { get; set; }
+        public List<TtMessage> TtMessages { get; set; }
     }
 
-    public partial class TtMessage
+    public partial class TtMessage : IScreenData
     {
         [JsonProperty("system-id")]
         public string SystemId { get; set; }
@@ -83,17 +124,28 @@ namespace Server.Models.Messages
 
         [JsonProperty("message-type")]
         public string MessageType { get; set; }
+
+        public KeyValuePair<string, string> ToSearchResult() => new KeyValuePair<string, string>(MessageNumber.ToString(), MessageDescription);
+
+        public string Serialize() => this.ToJson();
     }
 
-    public partial class Message
+    public partial class Messages
     {
-        public static Message FromJson(string json) => JsonConvert.DeserializeObject<Message>(json, Server.Models.Messages.Converter.Settings);
+        public static Messages FromJson(string json) => JsonConvert.DeserializeObject<Messages>(json, Server.Models.Messages.Converter.SettingsWithoutDash);
+    }
+
+    public partial class TtMessage
+    {
+        public static TtMessage FromJson(string json) => JsonConvert.DeserializeObject<TtMessage>(json, Server.Models.Messages.Converter.SettingsWithoutDash);
     }
 
     public static class Serialize
     {
-        public static string ToJson(this Message self) => JsonConvert.SerializeObject(self, Server.Models.Messages.Converter.Settings);
+        public static string ToJson(this Messages self) => JsonConvert.SerializeObject(self, Server.Models.Messages.Converter.Settings);
+        public static string ToJson(this TtMessage self) => JsonConvert.SerializeObject(self, Server.Models.Messages.Converter.Settings);
     }
+
 
     internal static class Converter
     {
@@ -101,6 +153,18 @@ namespace Server.Models.Messages
         {
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
+            Formatting = Formatting.Indented,
+            Converters = {
+                new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
+            },
+        };
+
+        public static readonly JsonSerializerSettings SettingsWithoutDash = new JsonSerializerSettings
+        {
+            MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
+            DateParseHandling = DateParseHandling.None,
+            Formatting = Formatting.Indented,
+            ContractResolver = new Utils.DataLoadContractResolver(),
             Converters = {
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },

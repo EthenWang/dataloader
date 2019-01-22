@@ -7,12 +7,14 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Server.Services;
 using Server.Models.Translation;
+using Server.Models;
+using Newtonsoft.Json.Linq;
 
 namespace Server.Controllers
 {
     using SearchResult = KeyValuePair<string, string>;
 
-    public class DataController<T> : ControllerBase
+    public class DataController<T> : ControllerBase where T : IDataFile
     {
         public IDataLoader Dataloader { get; }
 
@@ -41,15 +43,82 @@ namespace Server.Controllers
         }
 
         [HttpGet("{name}")]
-        public async Task<T> GetAsync(string name)
+        public async Task<IDataFile> GetAsync(string name)
         {
             try
             {
                 return await Dataloader.LoadAsync<T>(Type, name);
             }
-            catch(Exception)
+            catch (Exception)
             {
-                return default(T);
+                throw;
+            }
+        }
+
+        [HttpGet("{name}/{key}")]
+        public async Task<IScreenData> GetAsync(string name, string key)
+        {
+            try
+            {
+                return await Dataloader.LoadAsync<T>(Type, name, key);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [Route("{name}")]
+        public async Task<string> PostAsync(string name, [FromBody]JObject data)
+        {
+            try
+            {
+                return await Dataloader.SaveAsync(Type, name, data);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpPost]
+        [Route("{name}/{key}")]
+        public async Task<string> PostAsync(string name, string key, [FromBody]JObject data)
+        {
+            try
+            {
+                return await Dataloader.SaveAsync(Type, name, key, data);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("{name}")]
+        public async Task<string> DeleteAsync(string name)
+        {
+            try
+            {
+                return await Dataloader.DeleteAsync<T>(Type, name);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        [HttpDelete("{name}/{key}")]
+        public async Task<string> DeleteAsync(string name, string key)
+        {
+            try
+            {
+                return await Dataloader.DeleteAsync<T>(Type, name, key);
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
 
