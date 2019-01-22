@@ -158,11 +158,11 @@ namespace Server.Services
                         dataFile = await LoadAsync<Screen>(type, name);
                         if (data.ContainsKey("screenobjname")) // ScreenObj
                         {
-                            screenData = data.ToObject<TtScreenObj>(new JsonSerializer() { ContractResolver = new Models.Screen.NoDashContractResolver() });
+                            screenData = data.ToObject<TtScreenObj>(new JsonSerializer() { ContractResolver = new Utils.DataLoadContractResolver() });
                         }
                         else if (data.ContainsKey("objname")) // ScreenChildObj
                         {
-                            screenData = data.ToObject<TtScreenChildObj>(new JsonSerializer() { ContractResolver = new Models.Screen.NoDashContractResolver() });
+                            screenData = data.ToObject<TtScreenChildObj>(new JsonSerializer() { ContractResolver = new Utils.DataLoadContractResolver() });
                         }
                         else
                         {
@@ -173,12 +173,12 @@ namespace Server.Services
 
                     case DataTypes.Messages:
                         dataFile = await LoadAsync<Messages>(type, name);
-                        screenData = data.ToObject<TtMessage>(new JsonSerializer() { ContractResolver = new Models.Messages.NoDashContractResolver() });
+                        screenData = data.ToObject<TtMessage>(new JsonSerializer() { ContractResolver = new Utils.DataLoadContractResolver() });
                         break;
 
                     case DataTypes.Translation:
                         dataFile = await LoadAsync<Translation>(type, name);
-                        screenData = data.ToObject<TtTranslation>(new JsonSerializer() { ContractResolver = new Models.Translation.NoDashContractResolver() });
+                        screenData = data.ToObject<TtTranslation>(new JsonSerializer() { ContractResolver = new Utils.DataLoadContractResolver() });
                         break;
 
                     default:

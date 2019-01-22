@@ -614,29 +614,10 @@ namespace Server.Models.Screen
             MetadataPropertyHandling = MetadataPropertyHandling.Ignore,
             DateParseHandling = DateParseHandling.None,
             Formatting = Formatting.Indented,
-            ContractResolver = new NoDashContractResolver(),
+            ContractResolver = new Utils.DataLoadContractResolver(),
             Converters = {
                 new IsoDateTimeConverter { DateTimeStyles = DateTimeStyles.AssumeUniversal }
             },
         };
-    }
-
-    internal class NoDashContractResolver : DefaultContractResolver
-    {
-        protected override IList<JsonProperty> CreateProperties(Type type, MemberSerialization memberSerialization)
-        {
-            // Let the base class create all the JsonProperties 
-            // using the short names
-            IList<JsonProperty> list = base.CreateProperties(type, memberSerialization);
-
-            // Now inspect each property and replace the 
-            // short name with the real property name
-            foreach (JsonProperty prop in list)
-            {
-                prop.PropertyName = prop.UnderlyingName.ToLower();
-            }
-
-            return list;
-        }
     }
 }
