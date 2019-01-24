@@ -30,47 +30,47 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IEnumerable<SearchResult>> Index()
+        public async Task<ActionResult<IEnumerable<SearchResult>>> Index()
         {
             try
             {
-                return await Dataloader.GetListAsync(Type);
+                return Ok(await Dataloader.GetListAsync(Type));
             }
             catch (Exception)
             {
-                return null;
+                return NotFound();
             }
         }
 
         [HttpGet("{name}")]
-        public async Task<IDataFile> GetAsync(string name)
+        public async Task<ActionResult<IDataFile>> GetAsync(string name)
         {
             try
             {
-                return await Dataloader.LoadAsync<T>(Type, name);
+                return Ok(await Dataloader.LoadAsync<T>(Type, name));
             }
             catch (Exception)
             {
-                throw;
+                return NotFound();
             }
         }
 
         [HttpGet("{name}/{key}")]
-        public async Task<IScreenData> GetAsync(string name, string key)
+        public async Task<ActionResult<IEnumerable<IScreenData>>> GetAsync(string name, IList<string> key)
         {
             try
             {
-                return await Dataloader.LoadAsync<T>(Type, name, key);
+                return Ok(await Dataloader.LoadAsync<T>(Type, name, key));
             }
             catch (Exception)
             {
-                throw;
+                return NotFound();
             }
         }
 
         [HttpPost]
         [Route("{name}")]
-        public async Task<string> PostAsync(string name, [FromBody]JObject data)
+        public async Task<ActionResult<string>> PostAsync(string name, [FromBody]JObject data)
         {
             try
             {
@@ -78,13 +78,13 @@ namespace Server.Controllers
             }
             catch (Exception)
             {
-                throw;
+                return NotFound();
             }
         }
 
         [HttpPost]
         [Route("{name}/{key}")]
-        public async Task<string> PostAsync(string name, string key, [FromBody]JObject data)
+        public async Task<ActionResult<string>> PostAsync(string name, string key, [FromBody]JObject data)
         {
             try
             {
@@ -92,12 +92,12 @@ namespace Server.Controllers
             }
             catch (Exception)
             {
-                throw;
+                return NotFound();
             }
         }
 
         [HttpDelete("{name}")]
-        public async Task<string> DeleteAsync(string name)
+        public async Task<ActionResult<string>> DeleteAsync(string name)
         {
             try
             {
@@ -105,12 +105,12 @@ namespace Server.Controllers
             }
             catch (Exception)
             {
-                throw;
+                return NotFound();
             }
         }
 
         [HttpDelete("{name}/{key}")]
-        public async Task<string> DeleteAsync(string name, string key)
+        public async Task<ActionResult<string>> DeleteAsync(string name, string key)
         {
             try
             {
@@ -118,35 +118,37 @@ namespace Server.Controllers
             }
             catch (Exception)
             {
-                throw;
+                return NotFound();
             }
         }
 
         [HttpGet("searchcode/{value}")]
-        public async Task<IEnumerable<SearchResult>> SearchCode(string value)
+        public async Task<ActionResult<IEnumerable<SearchResult>>> SearchCode(string value)
         {
             try
             {
                 var list = await Dataloader.GetListAsync(Type);
-                return list.Where(r => !string.IsNullOrEmpty(r.Key) && r.Key.StartsWith(value, true, null));
+                var res = list.Where(r => !string.IsNullOrEmpty(r.Key) && r.Key.StartsWith(value, true, null));
+                return Ok(res);
             }
             catch (Exception)
             {
-                return null;
+                return NotFound();
             }
         }
 
         [HttpGet("searchvalue/{value}")]
-        public async Task<IEnumerable<SearchResult>> SearchValue(string value)
+        public async Task<ActionResult<IEnumerable<SearchResult>>> SearchValue(string value)
         {
             try
             {
                 var list = await Dataloader.GetListAsync(Type);
-                return list.Where(r => !string.IsNullOrEmpty(r.Value) && r.Value.StartsWith(value, true, null));
+                var res = list.Where(r => !string.IsNullOrEmpty(r.Value) && r.Value.StartsWith(value, true, null));
+                return Ok(res);
             }
             catch (Exception)
             {
-                return null;
+                return NotFound();
             }
         }
 

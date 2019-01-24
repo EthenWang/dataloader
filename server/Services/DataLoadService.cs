@@ -50,7 +50,7 @@ namespace Server.Services
 
             try
             {
-                file = File.Open(BuildFilePath(type, name), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                file = File.Open(BuildFilePath(type, name), FileMode.Open, FileAccess.Read);
                 sr = new StreamReader(file);
                 var jsonObject = await JToken.ReadFromAsync(new JsonTextReader(sr));
                 data = jsonObject.ToObject<T>();
@@ -68,14 +68,15 @@ namespace Server.Services
             }
         }
 
-        public async Task<IScreenData> LoadAsync<T>(DataTypes type, string name, string key) where T : IDataFile
+        public async Task<IEnumerable<IScreenData>> LoadAsync<T>(DataTypes type, string name, IList<string> key) where T : IDataFile
         {
             FileStream file = null;
             StreamReader sr = null;
             IDataFile data = Cache.LoadCache<T>(type, name);
+
             if (data != null)
             {
-                return data.GetByKey(key);
+                return key.Select(k => data.GetByKey(k));
             }
 
             try
@@ -85,7 +86,7 @@ namespace Server.Services
                 var jsonObject = await JToken.ReadFromAsync(new JsonTextReader(sr));
                 data = jsonObject.ToObject<T>();
                 Cache.SetCache(type, name, data);
-                return data.GetByKey(key);
+                return key.Select(k => data.GetByKey(k));
             }
             catch (Exception e)
             {
