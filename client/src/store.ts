@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import * as _ from 'lodash';
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosResponse, AxiosPromise } from 'axios';
 import { Screen, ScreenObjectModel, ScreenResponse, Translation, Message,
-  ObjectProps, ScreenChildObjectModel } from '@/models';
+  ObjectProps, ScreenChildObjectModel, TranslationResponse, MessageResponse } from '@/models';
 import * as VueCookies from 'vue-cookies';
 
 Vue.use(Vuex);
@@ -19,8 +19,14 @@ export default new Vuex.Store({
       selectedObject: {} as ScreenObjectModel,
       selectedChildObject: {} as ScreenChildObjectModel
     },
-    translation: new Array<Translation>(),
-    message: new Array<Message>()
+    translation: {
+      metaData: new Array<Translation>(),
+      selected: {} as Translation
+    },
+    messages: {
+      metaData: new Array<Message>(),
+      selected: {} as Message
+    }
   },
   getters: {
     getState: state => (payload: ActionPayload) => {
@@ -47,15 +53,56 @@ export default new Vuex.Store({
   },
   actions: {
     get({ commit }, payload: ActionPayload) {
-      switch (payload.cls) {
-        case 'label':
-          axios.get(`/api/translation/${payload.value}`);
+      switch (payload.module) {
+        case 'translation': 
+          {
+            let p = {} as AxiosPromise<TranslationResponse>;
+            switch (payload.cls) {
+              case 'code':
+                p = axios.get(`/api/translation/code/${payload.value}`);
+                break;
+              case 'text':
+                p = axios.get(`/api/translation/text/${payload.value}`);
+                break;
+            }
+            if (p) {
+              p.then(({ data }: AxiosResponse<TranslationResponse>) => {
+                if (!data) return;
+                commit('setState', {
+                  module: 'translation',
+                  path: 'metaData',
+                  value: data
+                });
+              });
+            }
+          }
           break;
-        case 'message':
-          axios.get(`/api/messages/${payload.value}`);
+        case 'messages':
+          {
+            let p = {} as AxiosPromise<MessageResponse>;
+            switch (payload.cls) {
+              case 'code':
+                p = axios.get(`/api/messages/code/${payload.value}`);
+                break;
+              case 'text':
+                p = axios.get(`/api/messages/text/${payload.value}`);
+                break;
+            }
+            if (p) {
+              p.then(({ data }: AxiosResponse<MessageResponse>) => {
+                if (!data) return;
+                commit('setState', {
+                  module: 'messages',
+                  path: 'metaData',
+                  value: data
+                });
+              });
+            }
+          }
           break;
         case 'screen':
-          axios.get(`/api/screen/${payload.value}`)
+          if (payload.cls === 'screenname') {
+            axios.get(`/api/screen/${payload.value}`)
             .then(({ data: { dsscreen } }: AxiosResponse<ScreenResponse>) => {
               if (!dsscreen) return;
               commit('setState', {
@@ -79,10 +126,8 @@ export default new Vuex.Store({
                   screenchildobject: dsscreen.ttscreenchildobj
                 }
               });
-            })
-            .catch(error => {
-              console.log(error);
             });
+          }
           break;
       }
     }

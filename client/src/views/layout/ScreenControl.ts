@@ -12,7 +12,7 @@ export default [
             type: 'search',
             label: 'Screen Name',
             path: 'metaData.screeninfo.screenname',
-            cls: 'screen'
+            cls: 'screenname'
           },
           {
             fieldName: 'screenprogram',

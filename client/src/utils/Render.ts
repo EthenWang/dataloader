@@ -104,7 +104,7 @@ export class Render {
       default:
         return this.createElement(
           'a-col', 
-          { attrs: { span: 4 } }, 
+          { attrs: { span: data.colspan || 4 } }, 
           [ 
             this.createElement(
               'ScreenObject', 

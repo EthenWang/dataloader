@@ -2,7 +2,7 @@ import { ScreenModel, ScreenObjectModel, ScreenChildObjectModel } from './screen
 import { Translation } from './translation';
 import { Message } from './message';
 
-type ModuleType = 'screen' | 'translation' | 'message';
+type ModuleType = 'screen' | 'translation' | 'messages';
 
 interface Screen {
     screeninfo: ScreenModel;
@@ -29,6 +29,19 @@ interface ScreenResponse {
   }
 }
 
+interface TranslationResponse {
+  dstranslation: {
+    tttranslation: Translation[]
+  }
+}
+
+interface MessageResponse {
+  dsmessages: {
+    ttmessages: Message[]
+  }
+}
+
 export { Screen, ScreenModel, ScreenObjectModel, ScreenChildObjectModel, 
-  Translation, Message, ObjectProps, ScreenResponse, ModuleType }
+  Translation, Message, ObjectProps, ScreenResponse, TranslationResponse, 
+  MessageResponse, ModuleType }
 

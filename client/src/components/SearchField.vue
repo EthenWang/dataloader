@@ -64,13 +64,7 @@ export default class SearchField extends Vue {
             this.dataSource = res.data
           });
         break;
-      case 'message':
-        this.$axios.get(`/api/messages/searchvalue/${value}`)
-          .then(res => {
-            this.dataSource = res.data
-          });
-        break;
-      case 'screen':
+      case 'screenname':
         this.$axios.get(`/api/screen/searchcode/${value}`)
           .then(res => {
             this.dataSource = res.data
@@ -87,13 +81,10 @@ export default class SearchField extends Vue {
   }
 
   onBlur() {
-    // Prevent unnecessary get, for example on screen control when leaving label code fields no need to get data
-    if (this.props.cls === this.props.module) {
-      this.$store.dispatch('get', {
-        ...this.props,
-        value: this.value
-      });
-    }
+    this.$store.dispatch('get', {
+      ...this.props,
+      value: this.value
+    });
   }
 }
 

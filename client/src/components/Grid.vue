@@ -10,7 +10,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
-import { gridColumnDefinition } from '@/views/layout';
+import screenDef from '@/views/layout';
 import { ObjectProps } from '@/models';
 
 @Component
@@ -19,7 +19,7 @@ export default class Grid extends Vue {
 
   data() {
     const columns = [];
-    const columnDef = gridColumnDefinition[this.props.cls!];
+    const columnDef = screenDef[this.props.module].grids[this.props.cls!];
     if (columnDef) {
       for(let col in columnDef) {
         columns.push({
@@ -35,7 +35,7 @@ export default class Grid extends Vue {
           this.$store.commit('setState', {
             ...this.props,
             path: this.props.itemPath,
-            value: record
+            value: selected ? record : null
           });
         }
       }

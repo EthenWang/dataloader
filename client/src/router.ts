@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import DataControl from '@/components/DataControl.vue';
 
 Vue.use(Router);
 
@@ -8,12 +9,36 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      path: '/',
+      name: 'default',
+      component: DataControl,
+      props: {
+        module: 'screen'
+      }
+    },
+    {
+      path: '/screen',
+      name: 'screen',
+      component: DataControl,
+      props: {
+        module: 'screen'
+      }
+    },
+    {
+      path: '/translation',
+      name: 'translation',
+      component: DataControl,
+      props: {
+        module: 'translation'
+      }
+    },
+    {
+      path: '/messages',
+      name: 'messages',
+      component: DataControl,
+      props: {
+        module: 'messages'
+      }
     },
   ],
 });

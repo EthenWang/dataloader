@@ -28,7 +28,11 @@ namespace Server.Controllers
             try
             {
                 var dirPath = DataloadService.BuildDirPath(Configuration, Type);
-                return Ok(Directory.GetFiles(dirPath)?.Select(s => new SearchResult(Path.GetFileNameWithoutExtension(s), "")));
+                return Ok(Directory.GetFiles(dirPath)?.Select(s =>
+                {
+                    var fileName = Path.GetFileNameWithoutExtension(s);
+                    return new SearchResult(fileName, fileName);
+                }));
             }
             catch (Exception)
             {
