@@ -8,9 +8,11 @@ import router from './router';
 import store from './store';
 import './registerServiceWorker';
 import * as _ from 'lodash';
+import axios from 'axios';
 
 Vue.config.productionTip = false;
 Vue.prototype.$_ = _;
+Vue.prototype.$axios = axios;
 Vue.use(Antd);
 Vue.use(VueCookies);
 

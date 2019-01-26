@@ -1,6 +1,7 @@
 import Vue, { VNode } from 'vue';
 import _ from 'lodash';
 import VueCookies from 'vue-cookies';
+import { AxiosStatic } from 'axios';
 
 declare global {
   namespace JSX {
@@ -19,5 +20,6 @@ declare module 'vue/types/vue' {
   interface Vue {
     $_: _.LoDashStatic,
     $cookies: VueCookies.VueCookies,
+    $axios: AxiosStatic
   }
 }

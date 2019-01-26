@@ -34,6 +34,7 @@ namespace Server
                 });
 
             services.AddScoped<IDataLoader, DataloadService>();
+            services.AddScoped<IMultiDataLoader, MultiDataLoadService>();
             services.AddSingleton<IDataCache, DataCacheService>();
         }
 

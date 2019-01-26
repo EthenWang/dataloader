@@ -8,9 +8,9 @@ namespace Server.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class TranslationController : DataController<Translation>
+    public class TranslationController : MultiDataController<Translation, TtTranslation>
     {
-        public TranslationController(IDataLoader dataLoader, IDataCache cache)
+        public TranslationController(IMultiDataLoader dataLoader, IDataCache cache)
             : base(dataLoader, cache, DataTypes.Translation) { }
     }
 }

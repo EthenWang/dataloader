@@ -8,9 +8,9 @@ namespace Server.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
-    public class MessagesController : DataController<Messages>
+    public class MessagesController : MultiDataController<Messages, TtMessage>
     {
-        public MessagesController(IDataLoader dataLoader, IDataCache cache)
+        public MessagesController(IMultiDataLoader dataLoader, IDataCache cache)
             : base(dataLoader, cache, DataTypes.Messages) { }
     }
 }

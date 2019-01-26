@@ -25,7 +25,16 @@ export default new Vuex.Store({
   getters: {
     getState: state => (payload: ActionPayload) => {
       if (!payload) return null;
-      return _.get(state, `${payload.module}.${payload.path}`);
+      const value = _.get(state, `${payload.module}.${payload.path}`);
+      if (value) return value;
+      switch (payload.type) {
+        case 'checkbox': return false;
+        default:
+          switch (payload.format) {
+            case 'string': return '';
+            case 'number': return 0;
+          }
+      }
     }
   },
   mutations: {
@@ -37,20 +46,6 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    search({ commit, state }, payload: ActionPayload) {
-      if (!payload || payload.type !== 'search') return;
-      switch (payload.cls) {
-        case 'label':
-          axios.get(`/api/translation/searchcode/${payload.value}`);
-          break;
-        case 'message':
-          axios.get(`/api/messages/searchcode/${payload.value}`);
-          break;
-        case 'screenname':
-          axios.get(`/api/screen/searchcode/${payload.value}`);
-          break;
-      }
-    },
     get({ commit }, payload: ActionPayload) {
       switch (payload.cls) {
         case 'label':
@@ -59,7 +54,7 @@ export default new Vuex.Store({
         case 'message':
           axios.get(`/api/messages/${payload.value}`);
           break;
-        case 'screenname':
+        case 'screen':
           axios.get(`/api/screen/${payload.value}`)
             .then(({ data: { dsscreen } }: AxiosResponse<ScreenResponse>) => {
               if (!dsscreen) return;
@@ -68,7 +63,19 @@ export default new Vuex.Store({
                 path: 'metaData',
                 value: {
                   screeninfo: dsscreen.ttscreen[0],
-                  screenobject: dsscreen.ttscreenobj,
+                  screenobject: dsscreen.ttscreenobj.map(obj => {
+                    const eventList = obj.objprocessresponse.toLowerCase();
+                    obj.eventchoose = eventList.includes('choose');
+                    obj.eventclick = eventList.includes('click');
+                    obj.eventleave = eventList.includes('leave');
+                    obj.evententry = eventList.includes('entry');
+                    obj.eventdblclick = eventList.includes('dbl_click');
+                    obj.eventvaluechange = eventList.includes('value_changed');
+                    obj.eventplus = eventList.includes('plus');
+                    obj.eventrowleave = eventList.includes('rowleave');
+                    obj.eventupdown = eventList.includes('updown');
+                    return obj;
+                  }),
                   screenchildobject: dsscreen.ttscreenchildobj
                 }
               });

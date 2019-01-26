@@ -3,10 +3,26 @@
     <a-auto-complete
       style="width: 100%"
       :value="value" 
+      optionLabelProp="value" 
       @search="onSearch"
       @change="onChange"
       @blur="onBlur"
     >
+      <template slot="dataSource">
+        <a-select-option
+          v-for="item in dataSource"
+          :key="item.key"
+          :value="item.key"
+        >
+          <div>
+            <b>{{ item.key }}</b>
+            <template v-if="item.value !== item.key">
+              <br>
+              {{ item.value }}
+            </template>
+          </div>
+        </a-select-option>
+      </template>
       <a-input>
         <a-icon slot="suffix" type="search" />
       </a-input>
@@ -19,19 +35,48 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { ObjectProps } from '@/models';
 
+interface SearchResult {
+  key: string,
+  value: string,
+}
+
 @Component
 export default class SearchField extends Vue {
   @Prop(Object) props!: ObjectProps;
+
+  private dataSource = null;
+
+  data() {
+    return {
+      dataSource: this.dataSource
+    }
+  }
 
   get value() {
     return this.$store.getters.getState(this.props);
   }
 
   onSearch(value: string) {
-    this.$store.dispatch('search', {
-      ...this.props,
-      value
-    });
+    switch (this.props.cls) {
+      case 'label':
+        this.$axios.get(`/api/translation/searchvalue/${value}`)
+          .then(res => {
+            this.dataSource = res.data
+          });
+        break;
+      case 'message':
+        this.$axios.get(`/api/messages/searchvalue/${value}`)
+          .then(res => {
+            this.dataSource = res.data
+          });
+        break;
+      case 'screen':
+        this.$axios.get(`/api/screen/searchcode/${value}`)
+          .then(res => {
+            this.dataSource = res.data
+          });
+        break;
+    }
   }
 
   onChange(value: string) {
@@ -42,10 +87,13 @@ export default class SearchField extends Vue {
   }
 
   onBlur() {
-    this.$store.dispatch('get', {
-      ...this.props,
-      value: this.value
-    })
+    // Prevent unnecessary get, for example on screen control when leaving label code fields no need to get data
+    if (this.props.cls === this.props.module) {
+      this.$store.dispatch('get', {
+        ...this.props,
+        value: this.value
+      });
+    }
   }
 }
 

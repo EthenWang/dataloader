@@ -51,44 +51,17 @@ namespace Server.Controllers
             }
             catch (Exception)
             {
-                return NotFound();
+                return null;
             }
         }
 
-        [HttpGet("{name}/{key}")]
-        public async Task<ActionResult<IEnumerable<IScreenData>>> GetAsync(string name, IList<string> key)
+        [HttpPost("{name}")]
+        public async Task<ActionResult> PostAsync(string name, JObject data)
         {
             try
             {
-                return Ok(await Dataloader.LoadAsync<T>(Type, name, key));
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPost]
-        [Route("{name}")]
-        public async Task<ActionResult<string>> PostAsync(string name, [FromBody]JObject data)
-        {
-            try
-            {
-                return await Dataloader.SaveAsync(Type, name, data);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpPost]
-        [Route("{name}/{key}")]
-        public async Task<ActionResult<string>> PostAsync(string name, string key, [FromBody]JObject data)
-        {
-            try
-            {
-                return await Dataloader.SaveAsync(Type, name, key, data);
+                await Dataloader.SaveAsync(Type, name, data);
+                return Ok();
             }
             catch (Exception)
             {
@@ -97,24 +70,12 @@ namespace Server.Controllers
         }
 
         [HttpDelete("{name}")]
-        public async Task<ActionResult<string>> DeleteAsync(string name)
+        public ActionResult DeleteAsync(string name)
         {
             try
             {
-                return await Dataloader.DeleteAsync<T>(Type, name);
-            }
-            catch (Exception)
-            {
-                return NotFound();
-            }
-        }
-
-        [HttpDelete("{name}/{key}")]
-        public async Task<ActionResult<string>> DeleteAsync(string name, string key)
-        {
-            try
-            {
-                return await Dataloader.DeleteAsync<T>(Type, name, key);
+                Dataloader.Delete<T>(Type, name);
+                return Ok();
             }
             catch (Exception)
             {
@@ -133,7 +94,7 @@ namespace Server.Controllers
             }
             catch (Exception)
             {
-                return NotFound();
+                return null;
             }
         }
 
@@ -148,7 +109,7 @@ namespace Server.Controllers
             }
             catch (Exception)
             {
-                return NotFound();
+                return null;
             }
         }
 

@@ -18,6 +18,7 @@ interface ObjectProps {
   type: 'panel' | 'collapse' | 'collapse-panel' | 'group' | 'textfield' |
         'search' | 'label' | 'checkbox' | 'combobox' | 'grid' | 'text',
   cls?: string,
+  format?: string,
 }
 
 interface ScreenResponse {

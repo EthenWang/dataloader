@@ -5,7 +5,6 @@ using System.Linq;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Server.Services;
 using Server.Models.Translation;
 using Server.Models.Messages;
 using Server.Models.Screen;
@@ -50,7 +49,7 @@ namespace Server.Services
 
             try
             {
-                file = File.Open(BuildFilePath(type, name), FileMode.Open, FileAccess.Read);
+                file = File.Open(BuildFilePath(type, name), FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
                 sr = new StreamReader(file);
                 var jsonObject = await JToken.ReadFromAsync(new JsonTextReader(sr));
                 data = jsonObject.ToObject<T>();
@@ -99,7 +98,7 @@ namespace Server.Services
             }
         }
 
-        public async Task<string> SaveAsync(DataTypes type, string name, JObject data)
+        public async Task SaveAsync(DataTypes type, string name, JObject data)
         {
             FileStream file = null;
             StreamWriter sw = null;
@@ -113,24 +112,18 @@ namespace Server.Services
                     case DataTypes.Screen:
                         dataFile = Screen.FromJson(data.ToString());
                         break;
-
                     case DataTypes.Messages:
                         dataFile = Messages.FromJson(data.ToString());
                         break;
-
                     case DataTypes.Translation:
                         dataFile = Translation.FromJson(data.ToString());
                         break;
+                    default:
+                        throw new NotSupportedException($"Data type: {type.ToString()} not supported");
                 }
                 sw = new StreamWriter(file);
                 await sw.WriteAsync(dataFile.Serialize());
                 Cache.SetCache(type, name, dataFile);
-
-                return "Success";
-            }
-            catch (JsonSerializationException e)
-            {
-                return e.Message;
             }
             catch (Exception e)
             {
@@ -143,72 +136,7 @@ namespace Server.Services
             }
         }
 
-        public async Task<string> SaveAsync(DataTypes type, string name, string key, JObject data)
-        {
-            FileStream file = null;
-            StreamWriter sw = null;
-            try
-            {
-                file = File.Open(BuildFilePath(type, name), FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.Read);
-
-                IDataFile dataFile = null;
-                IScreenData screenData = null;
-                switch (type)
-                {
-                    case DataTypes.Screen:
-                        dataFile = await LoadAsync<Screen>(type, name);
-                        if (data.ContainsKey("screenobjname")) // ScreenObj
-                        {
-                            screenData = data.ToObject<TtScreenObj>(new JsonSerializer() { ContractResolver = new Utils.DataLoadContractResolver() });
-                        }
-                        else if (data.ContainsKey("objname")) // ScreenChildObj
-                        {
-                            screenData = data.ToObject<TtScreenChildObj>(new JsonSerializer() { ContractResolver = new Utils.DataLoadContractResolver() });
-                        }
-                        else
-                        {
-                            throw new FormatException("Do not put stones into the machine");
-                        }
-
-                        break;
-
-                    case DataTypes.Messages:
-                        dataFile = await LoadAsync<Messages>(type, name);
-                        screenData = data.ToObject<TtMessage>(new JsonSerializer() { ContractResolver = new Utils.DataLoadContractResolver() });
-                        break;
-
-                    case DataTypes.Translation:
-                        dataFile = await LoadAsync<Translation>(type, name);
-                        screenData = data.ToObject<TtTranslation>(new JsonSerializer() { ContractResolver = new Utils.DataLoadContractResolver() });
-                        break;
-
-                    default:
-                        return "Invalid type";
-                }
-                dataFile.CreateOrUpdate(screenData);
-                string newData = dataFile.Serialize();
-
-                sw = new StreamWriter(file);
-                await sw.WriteAsync(newData);
-                Cache.SetCache(type, name, dataFile);
-                return "Success";
-            }
-            catch (JsonSerializationException e)
-            {
-                return e.Message;
-            }
-            catch (Exception e)
-            {
-                throw e;
-            }
-            finally
-            {
-                sw?.Close();
-                file?.Close();
-            }
-        }
-
-        public async Task<string> DeleteAsync<T>(DataTypes type, string name) where T : IDataFile
+        public void Delete<T>(DataTypes type, string name) where T : IDataFile
         {
             string filePath = BuildFilePath(type, name);
             try
@@ -219,7 +147,6 @@ namespace Server.Services
                 }
                 File.Delete(filePath);
                 Cache.Clear(type);
-                return "Success";
             }
             catch (Exception e)
             {
@@ -227,7 +154,7 @@ namespace Server.Services
             }
         }
 
-        public async Task<string> DeleteAsync<T>(DataTypes type, string name, string key) where T : IDataFile
+        public async Task DeleteAsync<T>(DataTypes type, string name, string key) where T : IDataFile
         {
             FileStream file = null;
             StreamReader sr = null;
@@ -241,7 +168,6 @@ namespace Server.Services
                 sw = new StreamWriter(file);
                 await sw.WriteAsync(data.Serialize());
                 Cache.SetCache(type, name, data);
-                return "Success";
             }
 
             try
@@ -259,7 +185,6 @@ namespace Server.Services
                 sw = new StreamWriter(file);
                 await sw.WriteAsync(data.Serialize());
                 Cache.SetCache(type, name, data);
-                return "Success";
             }
             catch (Exception e)
             {
@@ -280,7 +205,11 @@ namespace Server.Services
                 switch (type)
                 {
                     case DataTypes.Screen:
-                        return Directory.GetFiles(BuildDirPath(type))?.Select(s => new SearchResult(Path.GetFileNameWithoutExtension(s), ""));
+                        return Directory.GetFiles(BuildDirPath(type))?.Select(s =>
+                        {
+                            var fileName = Path.GetFileNameWithoutExtension(s);
+                            return new SearchResult(fileName, fileName);
+                        });
                     case DataTypes.Translation:
                         {
                             IDataFile translation = await LoadAsync<Translation>(type, lang.ToString());
@@ -292,7 +221,7 @@ namespace Server.Services
                             return messages.GetAll().Select(t => t.ToSearchResult());
                         }
                     default:
-                        return null;
+                        throw new NotSupportedException($"Data type: {type.ToString()} not supported");
                 }
             }
             catch (Exception e)
@@ -303,12 +232,22 @@ namespace Server.Services
 
         public string BuildDirPath(DataTypes type)
         {
-            return Path.Combine(Configuration["DataPath"], $"sd-{type.ToString()}");
+            return BuildDirPath(Configuration, type);
+        }
+
+        public static string BuildDirPath(IConfiguration configuration, DataTypes type)
+        {
+            return Path.Combine(configuration["DataPath"], $"sd-{type.ToString()}");
         }
 
         public string BuildFilePath(DataTypes type, string name)
         {
-            return Path.Combine(BuildDirPath(type), $"{name}.json");
+            return BuildFilePath(Configuration, type, name);
+        }
+
+        public static string BuildFilePath(IConfiguration configuration, DataTypes type, string name)
+        {
+            return Path.Combine(BuildDirPath(configuration, type), $"{name}.json");
         }
     }
 }

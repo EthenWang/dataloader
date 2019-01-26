@@ -106,6 +106,15 @@ export interface ScreenObjectModel {
     helpoverridesinglelanguage: string;
     fieldtype: string;
     objcreatedbyscreendesigner: boolean;
+    eventchoose?: boolean;
+    eventclick?: boolean;
+    eventleave?: boolean;
+    evententry?: boolean;
+    eventdblclick?: boolean;
+    eventvaluechange?: boolean;
+    eventplus?: boolean;
+    eventrowleave?: boolean;
+    eventupdown?: boolean;
 }
 
 export interface ScreenChildObjectModel {
