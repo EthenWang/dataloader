@@ -68,7 +68,7 @@ export class Render {
       case 'group':
         return this.createElement(
           ComponentMap[data.type],
-          { style: { 'padding-left': '8lpx' } },
+          { style: { 'padding-left': '8px' } },
           [ 
             this.createElement(
               'a-row', 

@@ -3,6 +3,7 @@
     :columns="columns"
     :dataSource="dataSource"
     :rowSelection="rowSelection"
+    :key="props.cls"
   >
   </a-table>
 </template>
@@ -18,6 +19,14 @@ export default class Grid extends Vue {
   @Prop(Object) props!: ObjectProps;
 
   data() {
+    return {
+      rowSelection: {
+        onSelect: this.onSelect.bind(this)
+      }
+    }
+  }
+
+  get columns() {
     const columns = [];
     const columnDef = screenDef[this.props.module].grids[this.props.cls!];
     if (columnDef) {
@@ -28,22 +37,19 @@ export default class Grid extends Vue {
         });
       }
     }
-    return {
-      columns,
-      rowSelection: {
-        onSelect: (record: any, selected: boolean) => {
-          this.$store.commit('setState', {
-            ...this.props,
-            path: this.props.itemPath,
-            value: selected ? record : null
-          });
-        }
-      }
-    }
+    return columns;
   }
 
   get dataSource() {
     return this.$store.getters.getState(this.props);
+  }
+
+  onSelect(record: any, selected: boolean) {
+    this.$store.commit('setState', {
+      ...this.props,
+      path: this.props.itemPath,
+      value: selected ? record : null
+    });
   }
 }
 

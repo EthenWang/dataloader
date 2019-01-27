@@ -1,5 +1,9 @@
 export default [
   {
+    type: 'text',
+    label: 'Message Control'
+  },
+  {
     fieldName: 'messagesection',
     type: 'panel',
     children: [

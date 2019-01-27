@@ -1,5 +1,9 @@
 export default [
   {
+    type: 'text',
+    label: 'Screen Control'
+  },
+  {
     fieldName: 'screeninfosection',
     type: 'panel',
     children: [

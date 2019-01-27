@@ -1,5 +1,9 @@
 export default [
   {
+    type: 'text',
+    label: 'Translation Control'
+  },
+  {
     fieldName: 'translationsection',
     type: 'panel',
     children: [
@@ -17,14 +21,8 @@ export default [
         type: 'search',
         path: 'selected.sdtext',
         format: 'string',
-        cls: 'text'
-      },
-      {
-        fieldName: 'sdabbreviation',
-        label: 'Abbreviation',
-        type: 'textfield',
-        path: 'selected.sdabbreviation',
-        format: 'string'
+        cls: 'text',
+        colspan: 20
       }
     ]
   },
