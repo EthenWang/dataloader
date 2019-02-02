@@ -36,7 +36,7 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import SearchField from './SearchField.vue';
-import { ObjectProps } from '@/models';
+import { ObjectProps } from '@/views/layout';
 
 @Component({
   components: { SearchField }

@@ -11,8 +11,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
-import screenDef from '@/views/layout';
-import { ObjectProps } from '@/models';
+import screenDef, { ObjectProps } from '@/views/layout';
 
 @Component
 export default class Grid extends Vue {

@@ -3,7 +3,8 @@ import Vuex from 'vuex';
 import * as _ from 'lodash';
 import axios, { AxiosResponse, AxiosPromise } from 'axios';
 import { Screen, ScreenObjectModel, ScreenResponse, Translation, Message,
-  ObjectProps, ScreenChildObjectModel, TranslationResponse, MessageResponse } from '@/models';
+  ScreenChildObjectModel, TranslationResponse, MessageResponse } from '@/models';
+import { ObjectProps } from '@/views/layout';
 import * as VueCookies from 'vue-cookies';
 
 Vue.use(Vuex);

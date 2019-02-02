@@ -2,8 +2,34 @@ import screenData from '@/views/layout/ScreenControl';
 import translationData from '@/views/layout/TranslationControl';
 import messageData from '@/views/layout/MessageControl';
 
+export type ModuleType = 'screen' | 'translation' | 'messages';
+
+export interface ObjectProps {
+  module: ModuleType,
+  type: 'panel' | 'collapse' | 'collapse-panel' | 'group' | 'textfield' |
+        'search' | 'label' | 'checkbox' | 'combobox' | 'grid' | 'text',
+  label?: string,
+  path?: string,
+  itemPath?: string,
+  cls?: string,
+  format?: string,
+  [k: string]: any
+}
+
+export interface ObjectDefinition extends ObjectProps {
+  fieldName: string;
+  colspan?: number;
+  children?: ObjectDefinition[];
+}
+
 export interface Indexable<T> { 
   [k: string]: T 
+}
+
+export interface MetaDataItem {
+  metaData: ObjectDefinition[],
+  grids: Indexable<any>,
+  [k: string]: any
 }
 
 export default {
@@ -55,5 +81,5 @@ export default {
       }
     }
   }
-} as Indexable<Indexable<any>>;
+} as unknown as Indexable<MetaDataItem>;
 
