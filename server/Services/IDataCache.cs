@@ -8,7 +8,7 @@ namespace Server.Services
 {
     public interface IDataCache
     {
-        IDataFile LoadCache<T>(DataTypes type, string name) where T : IDataFile;
+        T LoadCache<T>(DataTypes type, string name) where T : class, IDataFile;
         void SetCache<T>(DataTypes type, string name, T data) where T : IDataFile;
         void Clear();
         void Clear(DataTypes type);

@@ -3,17 +3,27 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Server.Models
 {
     public interface IDataFile
     {
-        IEnumerable<IScreenData> GetAll();
-        IScreenData Get(Func<IScreenData, bool> searchFunc);
+        IEnumerable<IScreenData> DataItems { get; }
         IScreenData GetByKey(string key);
         void DeleteByKey(string key);
         string Serialize();
         void CreateOrUpdate(IScreenData screenData);
         void CreateOrUpdate<T>(JObject screenData) where T : IScreenData;
+    }
+
+    public static class DataFileExtension
+    {
+        public static IEnumerable<T> Get<T>(this IDataFile file, Func<T, bool> searchFunc = null) where T : class, IScreenData
+        {
+            var items = file.DataItems.Select(i => i as T);
+            if (searchFunc == null) return items;
+            return items.Where(searchFunc);
+        }
     }
 }

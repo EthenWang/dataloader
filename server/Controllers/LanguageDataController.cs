@@ -12,27 +12,17 @@ namespace Server.Controllers
 {
     using SearchResult = KeyValuePair<string, string>;
 
-    public class LanguageDataController<T, U> : MultiDataController<T, U> where T : IDataFile where U : IScreenData
+    public class LanguageDataController<T> : ItemDataController<T> where T : class, IDataFile
     {
-        public IConfiguration Configuration { get; }
-
-        public LanguageDataController(IConfiguration configuration, IMultiDataLoader dataloader, IDataCache cache, DataTypes type)
-            : base(dataloader, cache, type)
-        {
-            Configuration = configuration;
-        }
+        public LanguageDataController(IMultiDataLoader dataloader, IDataCache cache, DataTypes type)
+            : base(dataloader, cache, type) { }
 
         [HttpGet("language")]
         public ActionResult<IEnumerable<SearchResult>> GetLanguages()
         {
             try
             {
-                var dirPath = DataloadService.BuildDirPath(Configuration, Type);
-                return Ok(Directory.GetFiles(dirPath)?.Select(s =>
-                {
-                    var fileName = Path.GetFileNameWithoutExtension(s);
-                    return new SearchResult(fileName, fileName);
-                }));
+                return Ok(Dataloader.GetFiles(Type));
             }
             catch (Exception)
             {

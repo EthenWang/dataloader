@@ -31,17 +31,11 @@ namespace Server.Services
 
         public IDataCache Cache { get; }
 
-        public Translation TranslationCollection { get; protected set; }
-
-        public Messages MessageCollection { get; protected set; }
-
-        public IList<Screen> ScreenCollection { get; protected set; }
-
-        public async Task<IDataFile> LoadAsync<T>(DataTypes type, string name) where T : IDataFile
+        public async Task<T> LoadAsync<T>(DataTypes type, string name) where T : class, IDataFile
         {
             FileStream file = null;
             StreamReader sr = null;
-            IDataFile data = Cache.LoadCache<T>(type, name);
+            var data = Cache.LoadCache<T>(type, name);
             if (data != null)
             {
                 return data;
@@ -67,11 +61,11 @@ namespace Server.Services
             }
         }
 
-        public async Task<IEnumerable<IScreenData>> LoadAsync<T>(DataTypes type, string name, IList<string> key) where T : IDataFile
+        public async Task<IEnumerable<IScreenData>> LoadAsync<T>(DataTypes type, string name, IList<string> key) where T : class, IDataFile
         {
             FileStream file = null;
             StreamReader sr = null;
-            IDataFile data = Cache.LoadCache<T>(type, name);
+            var data = Cache.LoadCache<T>(type, name);
 
             if (data != null)
             {
@@ -136,12 +130,12 @@ namespace Server.Services
             }
         }
 
-        public void Delete<T>(DataTypes type, string name) where T : IDataFile
+        public void Delete<T>(DataTypes type, string name) where T : class, IDataFile
         {
             string filePath = BuildFilePath(type, name);
             try
             {
-                if(!File.Exists(filePath))
+                if (!File.Exists(filePath))
                 {
                     throw new IOException("File not found");
                 }
@@ -154,12 +148,12 @@ namespace Server.Services
             }
         }
 
-        public async Task DeleteAsync<T>(DataTypes type, string name, string key) where T : IDataFile
+        public async Task DeleteAsync<T>(DataTypes type, string name, string key) where T : class, IDataFile
         {
             FileStream file = null;
             StreamReader sr = null;
             StreamWriter sw = null;
-            IDataFile data = Cache.LoadCache<T>(type, name);
+            var data = Cache.LoadCache<T>(type, name);
             if (data != null)
             {
                 data.DeleteByKey(key);
@@ -213,12 +207,12 @@ namespace Server.Services
                     case DataTypes.Translation:
                         {
                             IDataFile translation = await LoadAsync<Translation>(type, lang.ToString());
-                            return translation.GetAll().Select(t => t.ToSearchResult());
+                            return translation.DataItems.Select(t => t.ToSearchResult());
                         }
                     case DataTypes.Messages:
                         {
                             IDataFile messages = await LoadAsync<Messages>(type, lang.ToString());
-                            return messages.GetAll().Select(t => t.ToSearchResult());
+                            return messages.DataItems.Select(t => t.ToSearchResult());
                         }
                     default:
                         throw new NotSupportedException($"Data type: {type.ToString()} not supported");
@@ -228,6 +222,15 @@ namespace Server.Services
             {
                 throw e;
             }
+        }
+
+        public IEnumerable<SearchResult> GetFiles(DataTypes type)
+        {
+            return Directory.GetFiles(BuildDirPath(type))?.Select(s =>
+            {
+                var fileName = Path.GetFileNameWithoutExtension(s);
+                return new SearchResult(fileName, fileName);
+            });
         }
 
         public string BuildDirPath(DataTypes type)

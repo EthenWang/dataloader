@@ -17,9 +17,7 @@ namespace Server.Models.Translation
         [JsonProperty("ds-translation")]
         public DsTranslation DsTranslation { get; set; }
 
-        public IEnumerable<IScreenData> GetAll() => DsTranslation.TtTranslation;
-
-        public IScreenData Get(Func<IScreenData, bool> searchFunc) => DsTranslation.TtTranslation.FirstOrDefault(searchFunc);
+        public IEnumerable<IScreenData> DataItems { get => DsTranslation.TtTranslation; }
 
         public IScreenData GetByKey(string key) => DsTranslation.TtTranslation.FirstOrDefault(x => x.SdCode == key);
 

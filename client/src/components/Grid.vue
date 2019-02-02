@@ -30,7 +30,8 @@ export default class Grid extends Vue {
     const columns = [];
     const columnDef = screenDef[this.props.module].grids[this.props.cls!];
     if (columnDef) {
-      for(let col in columnDef) {
+      for (const col in columnDef) {
+        if (!columnDef.hasOwnProperty(col)) continue;
         columns.push({
           title: columnDef[col],
           dataIndex: col,

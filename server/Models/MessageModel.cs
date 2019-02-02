@@ -18,9 +18,7 @@ namespace Server.Models.Messages
         [JsonProperty("ds-messages")]
         public DsMessages DsMessages { get; set; }
 
-        public IEnumerable<IScreenData> GetAll() => DsMessages.TtMessages;
-
-        public IScreenData Get(Func<IScreenData, bool> searchFunc) => DsMessages.TtMessages.FirstOrDefault(searchFunc);
+        public IEnumerable<IScreenData> DataItems { get => DsMessages.TtMessages; }
 
         public IScreenData GetByKey(string key) => DsMessages.TtMessages.FirstOrDefault(x => x.MessageNumber == long.Parse(key));
 

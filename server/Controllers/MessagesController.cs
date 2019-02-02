@@ -7,10 +7,11 @@ namespace Server.Controllers
     using Server.Models.Messages;
     using System.Threading.Tasks;
     using System.Linq;
+    using Server.Models;
 
     [Route("api/[controller]")]
     [ApiController]
-    public class MessagesController : MultiDataController<Messages, TtMessage>
+    public class MessagesController : LanguageDataController<Messages>
     {
         public MessagesController(IMultiDataLoader dataLoader, IDataCache cache)
             : base(dataLoader, cache, DataTypes.Messages) { }
@@ -21,7 +22,7 @@ namespace Server.Controllers
             try
             {
                 var list = await Dataloader.LoadAsync<Messages>(Type, lang.ToString()) as Messages;
-                var res = list?.DsMessages.TtMessages?.Where(r => r.MessageNumber.ToString().StartsWith(value, true, null));
+                var res = list?.Get<TtMessage>(r => r.MessageNumber.ToString().StartsWith(value, true, null));
                 return Ok(res);
             }
             catch (Exception)
@@ -36,7 +37,7 @@ namespace Server.Controllers
             try
             {
                 var list = await Dataloader.LoadAsync<Messages>(Type, lang.ToString()) as Messages;
-                var res = list?.DsMessages.TtMessages?.Where(r => r.MessageDescription.StartsWith(value, true, null));
+                var res = list?.Get<TtMessage>(r => r.MessageDescription.StartsWith(value, true, null));
                 return Ok(res);
             }
             catch (Exception)

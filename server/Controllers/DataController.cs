@@ -14,7 +14,7 @@ namespace Server.Controllers
 {
     using SearchResult = KeyValuePair<string, string>;
 
-    public class DataController<T> : ControllerBase where T : IDataFile
+    public class DataController<T> : ControllerBase where T : class, IDataFile
     {
         public IDataLoader Dataloader { get; }
 
@@ -43,7 +43,7 @@ namespace Server.Controllers
         }
 
         [HttpGet("{name}")]
-        public async Task<ActionResult<IDataFile>> GetAsync(string name)
+        public async Task<ActionResult<T>> GetAsync(string name)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace Server.Controllers
             }
         }
 
-        [HttpGet("searchcode/{value}")]
+        [HttpGet("codelist/{value}")]
         public async Task<ActionResult<IEnumerable<SearchResult>>> SearchCode(string value)
         {
             try
@@ -98,7 +98,7 @@ namespace Server.Controllers
             }
         }
 
-        [HttpGet("searchvalue/{value}")]
+        [HttpGet("valuelist/{value}")]
         public async Task<ActionResult<IEnumerable<SearchResult>>> SearchValue(string value)
         {
             try

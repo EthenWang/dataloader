@@ -10,14 +10,14 @@ namespace Server.Services
     {
         private Dictionary<DataTypes, Dictionary<string, IDataFile>> cache = new Dictionary<DataTypes, Dictionary<string, IDataFile>>();
 
-        public IDataFile LoadCache<T>(DataTypes type, string name) where T : IDataFile
+        public T LoadCache<T>(DataTypes type, string name) where T : class, IDataFile
         {
             if (cache.ContainsKey(type))
             {
                 var dict = cache[type];
                 if (dict?.ContainsKey(name) == true)
                 {
-                    return dict[name];
+                    return dict[name] as T;
                 }
             }
             return default(T);

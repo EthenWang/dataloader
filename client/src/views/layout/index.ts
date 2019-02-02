@@ -2,6 +2,10 @@ import screenData from '@/views/layout/ScreenControl';
 import translationData from '@/views/layout/TranslationControl';
 import messageData from '@/views/layout/MessageControl';
 
+export interface Indexable<T> { 
+  [k: string]: T 
+}
+
 export default {
   screen: {
     metaData: screenData,
@@ -51,8 +55,5 @@ export default {
       }
     }
   }
-} as unknown as { [k: string]: {
-  metaData: object[],
-  grids: { [k: string]: { [k: string]: string} }
-}}
+} as Indexable<Indexable<any>>;
 

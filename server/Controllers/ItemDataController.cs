@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Server.Controllers
 {
-    public class MultiDataController<T, U> : DataController<T> where T : IDataFile where U : IScreenData
+    public class ItemDataController<T> : DataController<T> where T : class, IDataFile
     {
         public new IMultiDataLoader Dataloader => base.Dataloader as IMultiDataLoader;
 
-        public MultiDataController(IMultiDataLoader dataloader, IDataCache cache, DataTypes type)
+        public ItemDataController(IMultiDataLoader dataloader, IDataCache cache, DataTypes type)
             :base(dataloader, cache, type) {}
 
         [HttpGet("{name}/{key}")]

@@ -15,9 +15,7 @@ namespace Server.Models.Screen
         [JsonProperty("ds-screen")]
         public DsScreen DsScreen { get; set; }
 
-        public IEnumerable<IScreenData> GetAll() => new List<IScreenData> { DsScreen };
-
-        public IScreenData Get(Func<IScreenData, bool> searchFunc) => DsScreen;
+        public IEnumerable<IScreenData> DataItems { get => DsScreen.TtScreenObj; }
 
         public IScreenData GetByKey(string key)
         {

@@ -7,10 +7,11 @@ namespace Server.Controllers
     using Server.Models.Translation;
     using System.Threading.Tasks;
     using System.Linq;
+    using Server.Models;
 
     [Route("api/[controller]")]
     [ApiController]
-    public class TranslationController : MultiDataController<Translation, TtTranslation>
+    public class TranslationController : LanguageDataController<Translation>
     {
         public TranslationController(IMultiDataLoader dataLoader, IDataCache cache)
             : base(dataLoader, cache, DataTypes.Translation) { }
@@ -20,8 +21,8 @@ namespace Server.Controllers
         {
             try
             {
-                var list = await Dataloader.LoadAsync<Translation>(Type, lang.ToString()) as Translation;
-                var res = list?.DsTranslation.TtTranslation.Where(r => r.SdCode.StartsWith(value, true, null));
+                var list = await Dataloader.LoadAsync<Translation>(Type, lang.ToString());
+                var res = list?.Get<TtTranslation>(r => r.SdCode.StartsWith(value, true, null));
                 return Ok(res);
             }
             catch (Exception)
@@ -36,7 +37,7 @@ namespace Server.Controllers
             try
             {
                 var list = await Dataloader.LoadAsync<Translation>(Type, lang.ToString()) as Translation;
-                var res = list?.DsTranslation.TtTranslation.Where(r => r.SdText.StartsWith(value, true, null));
+                var res = list?.Get<TtTranslation>(r => r.SdText.StartsWith(value, true, null));
                 return Ok(res);
             }
             catch (Exception)
