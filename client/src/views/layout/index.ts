@@ -16,6 +16,10 @@ export interface ObjectProps {
   [k: string]: any
 }
 
+export interface FieldProps extends ObjectProps {
+  value: any;
+}
+
 export interface ObjectDefinition extends ObjectProps {
   fieldName: string;
   colspan?: number;

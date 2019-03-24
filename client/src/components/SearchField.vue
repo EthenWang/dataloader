@@ -2,7 +2,7 @@
   <a-form-item :label="props.label" :colon="false">  
     <a-auto-complete
       style="width: 100%"
-      :value="value" 
+      :value="props.value" 
       optionLabelProp="value" 
       @search="onSearch"
       @change="onChange"
@@ -33,7 +33,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
-import { ObjectProps } from '@/views/layout';
+import { FieldProps } from '@/views/layout';
 
 interface SearchResult {
   key: string,
@@ -42,7 +42,8 @@ interface SearchResult {
 
 @Component
 export default class SearchField extends Vue {
-  @Prop(Object) props!: ObjectProps;
+  @Prop(Object) props!: FieldProps;
+  @Prop(Function) onChange!: (val: string) => void;
 
   private dataSource = null;
 
@@ -52,39 +53,25 @@ export default class SearchField extends Vue {
     }
   }
 
-  get value() {
-    return this.$store.getters.getState(this.props);
-  }
-
   onSearch(value: string) {
+    let url = '';
     switch (this.props.cls) {
       case 'label':
-        this.$axios.get(`/api/translation/searchvalue/${value}`)
-          .then(res => {
-            this.dataSource = res.data
-          });
+        url = `api/translation/searchvalue/${value}`;
         break;
       case 'screenname':
-        this.$axios.get(`/api/screen/searchcode/${value}`)
-          .then(res => {
-            this.dataSource = res.data
-          });
+        url = `api/screen/searchcode/${value}`;
         break;
+    }
+    if (url !== '') {
+      this.$axios.get(url).then(res => {
+        this.dataSource = res.data
+      });
     }
   }
 
-  onChange(value: string) {
-    this.$store.commit('setState', {
-      ...this.props,
-      value
-    });
-  }
-
   onBlur() {
-    this.$store.dispatch('get', {
-      ...this.props,
-      value: this.value
-    });
+    this.$store.dispatch('get', this.props);
   }
 }
 

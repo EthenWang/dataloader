@@ -16,21 +16,17 @@ export default class Render {
 
   private processData(data: ObjectDefinition[] | undefined): VNode[] {
     if (!data) return [];
-    return data.map((item) => this.createNode(item));
+    return data.map((item) => this.createNode(item))
   }
 
   private createNode(data: ObjectDefinition) {
-    const children = this.processData(data.children);
+    const children = this.processData(data.children)
     const params = {
-      /* here variable name must be "props" to match Vue render rules 
-        https://vuejs.org/v2/guide/render-function.html#createElement-Arguments */
       props: {
-        props: {
-          ...data,
-          module: this.module
-        } as ObjectProps
+        ...data,
+        module: this.module
       }
-    };
+    }
     switch (data.type) {
       case 'panel':
         return (
@@ -55,7 +51,7 @@ export default class Render {
       case 'grid':
         return (
           <div>
-            <Grid {...params} />
+            <Grid v-bind='params' />
           </div>
         )
       case 'text':
@@ -63,7 +59,7 @@ export default class Render {
       default:
         return (
           <a-col span={data.colspan || 4}> 
-            <ScreenObject {...params} />
+            <ScreenObject v-bind='params' />
           </a-col>
         )
     }

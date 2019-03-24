@@ -7,7 +7,11 @@
       {{ props.label }}
     </a-checkbox>
   </a-form-item>
-  <search-field v-else-if="props.type === 'search'" :props="props" />
+  <search-field 
+    v-else-if="props.type === 'search'" 
+    :props="fieldProps" 
+    :onChange="onSelectChange"
+  />
   <a-form-item v-else :label="props.label" :colon="false">
     <a-select 
       v-if="props.type === 'combobox'" 
@@ -75,7 +79,11 @@ export default class ScreenObject extends Vue {
       }
     }
     return {
-      selectItems: items.map(item => ({ value: item, text: item }))
+      selectItems: items.map(item => ({ value: item, text: item })),
+      fieldProps: {
+        ...this.props,
+        value: this.value
+      }
     };
   }
 
